@@ -10,11 +10,16 @@
     <title>შემოქმედებითი საქართველო | Creative Georgia</title>
     <!-- Runtime API Configuration - MUST be before module scripts -->
     <script>
-      // Production API base URL - Set before Vue app loads
+      // Production API base URL - Set IMMEDIATELY before Vue app loads
+      // This runs synchronously and blocks until complete
       (function() {
-        if (window.location.origin.includes('creative.buildweb.dev') || 
-            window.location.origin.includes('creative-georgia.ge')) {
+        'use strict';
+        var origin = window.location.origin;
+        if (origin.includes('creative.buildweb.dev') ||
+            origin.includes('creative-georgia.ge')) {
           window.__API_BASE_URL__ = 'https://creative-api.buildweb.dev/api';
+          // Also set a flag to indicate it's been set
+          window.__API_CONFIGURED__ = true;
         }
       })();
     </script>

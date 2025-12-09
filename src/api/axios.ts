@@ -31,6 +31,7 @@ const getApiBaseURL = (): string => {
 }
 
 // Enhanced axios instance with retry and caching
+// Set initial baseURL - will be overridden in interceptor if runtime config is available
 const api = axios.create({
   baseURL: getApiBaseURL(),
   timeout: 30000,
@@ -39,6 +40,17 @@ const api = axios.create({
     'Accept': 'application/json'
   }
 })
+
+// Update baseURL if runtime config is set (runs after window.__API_BASE_URL__ is available)
+if (typeof window !== 'undefined') {
+  // Use setTimeout to ensure this runs after the inline script
+  setTimeout(() => {
+    const runtimeUrl = (window as any).__API_BASE_URL__
+    if (runtimeUrl) {
+      api.defaults.baseURL = runtimeUrl
+    }
+  }, 0)
+}
 
 // Add custom retry configuration to axios config
 declare module 'axios' {
@@ -60,6 +72,18 @@ const responseCache = new Map<string, CacheEntry>()
 // Request interceptor with caching
 api.interceptors.request.use(
   (config) => {
+    // Update baseURL from runtime config if available (checked on every request)
+    if (typeof window !== 'undefined' && (window as any).__API_BASE_URL__) {
+      config.baseURL = (window as any).__API_BASE_URL__
+    } else {
+      // Fallback to auto-detection
+      const origin = window.location.origin
+      if (origin.includes('creative.buildweb.dev') || 
+          origin.includes('creative-georgia.ge')) {
+        config.baseURL = 'https://creative-api.buildweb.dev/api'
+      }
+    }
+    
     const authStore = useAuthStore()
     
     // Add auth token if available
