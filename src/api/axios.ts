@@ -3,9 +3,43 @@ import { useAuthStore } from '../stores/auth'
 import { useNotificationsStore } from '../stores/notifications'
 import router from '../router'
 
+// Detect API base URL based on environment
+const getApiBaseURL = (): string => {
+  // Use environment variable if set (highest priority)
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL
+  }
+  
+  // Check for runtime config (for production builds)
+  if (typeof window !== 'undefined' && (window as any).__API_BASE_URL__) {
+    return (window as any).__API_BASE_URL__
+  }
+  
+  // Auto-detect based on current origin
+  const origin = window.location.origin
+  const isProduction = origin.includes('creative.buildweb.dev') || 
+                       origin.includes('creative-georgia.ge') ||
+                       origin.includes('www.creative-georgia.ge')
+  
+  if (isProduction) {
+    // For production, try subdomain first, then same origin
+    if (origin.includes('creative.buildweb.dev')) {
+      return 'https://api.creative.buildweb.dev/api'
+    }
+    if (origin.includes('creative-georgia.ge')) {
+      return 'https://api.creative-georgia.ge/api'
+    }
+    // Fallback: same origin
+    return `${origin}/api`
+  }
+  
+  // Development fallback
+  return 'http://localhost:8000/api'
+}
+
 // Enhanced axios instance with retry and caching
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: getApiBaseURL(),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
