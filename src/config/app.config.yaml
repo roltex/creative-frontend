@@ -1,0 +1,65 @@
+# Creative Georgia Application Configuration
+
+app:
+  name: "შემოქმედებითი საქართველო"
+  version: "1.0.0"
+  defaultLocale: "ka"
+  availableLocales:
+    - code: "ka"
+      name: "ქართული"
+      flag: "🇬🇪"
+    - code: "en"
+      name: "English"
+      flag: "🇬🇧"
+
+api:
+  baseURL: "https://api.creative-georgia.ge/api"
+  timeout: 30000
+  retryAttempts: 3
+
+features:
+  enableRegistration: true
+  enableNewsletter: true
+  enableFileUploads: true
+  maxFileSize: 10485760 # 10MB in bytes
+  allowedFileTypes:
+    - "application/pdf"
+    - "image/jpeg"
+    - "image/png"
+    - "image/gif"
+    - "application/msword"
+    - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+social:
+  facebook: "https://facebook.com/creativegeorgia"
+  instagram: "https://instagram.com/creativegeorgia"
+  linkedin: "https://linkedin.com/company/creative-georgia"
+  twitter: "https://twitter.com/creativegeorgia"
+  youtube: "https://youtube.com/creativegeorgia"
+
+contact:
+  email: "info@creative-georgia.ge"
+  phone: "+995 32 2 123 456"
+  address:
+    ka: "თბილისი, რუსთაველის გამზირი 42"
+    en: "42 Rustaveli Avenue, Tbilisi, Georgia"
+
+map:
+  lat: 41.6938
+  lng: 44.8015
+  zoom: 15
+
+pagination:
+  defaultPageSize: 12
+  pageSizeOptions:
+    - 12
+    - 24
+    - 48
+
+theme:
+  primaryColor: "#024243"
+  secondaryColor: "#006ea5"
+  successColor: "#10b981"
+  warningColor: "#f59e0b"
+  errorColor: "#ef4444"
+  infoColor: "#024243"
