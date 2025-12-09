@@ -22,15 +22,8 @@ const getApiBaseURL = (): string => {
                        origin.includes('www.creative-georgia.ge')
   
   if (isProduction) {
-    // For production, try subdomain first, then same origin
-    if (origin.includes('creative.buildweb.dev')) {
-      return 'https://api.creative.buildweb.dev/api'
-    }
-    if (origin.includes('creative-georgia.ge')) {
-      return 'https://api.creative-georgia.ge/api'
-    }
-    // Fallback: same origin
-    return `${origin}/api`
+    // Production API URL
+    return 'https://creative-api.buildweb.dev/api'
   }
   
   // Development fallback

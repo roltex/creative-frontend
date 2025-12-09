@@ -11,19 +11,12 @@
   </head>
   <body>
     <div id="app"></div>
-    <!-- Runtime API Configuration - Set your production API URL here -->
+    <!-- Runtime API Configuration -->
     <script>
-      // Set your production API base URL here (without trailing /api)
-      // Examples:
-      // window.__API_BASE_URL__ = 'https://api.creative.buildweb.dev/api';
-      // window.__API_BASE_URL__ = 'https://creative.buildweb.dev/api';
-      // window.__API_BASE_URL__ = 'https://api.creative-georgia.ge/api';
-      
-      // Auto-detect for common production domains
-      if (window.location.origin.includes('creative.buildweb.dev')) {
-        window.__API_BASE_URL__ = window.location.origin.replace('creative.buildweb.dev', 'api.creative.buildweb.dev') + '/api';
-      } else if (window.location.origin.includes('creative-georgia.ge')) {
-        window.__API_BASE_URL__ = window.location.origin.replace('creative-georgia.ge', 'api.creative-georgia.ge') + '/api';
+      // Production API base URL
+      if (window.location.origin.includes('creative.buildweb.dev') || 
+          window.location.origin.includes('creative-georgia.ge')) {
+        window.__API_BASE_URL__ = 'https://creative-api.buildweb.dev/api';
       }
     </script>
     <script type="module" src="/src/main.ts"></script>
