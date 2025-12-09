@@ -8,7 +8,17 @@
     <meta name="description" content="შემოქმედებითი საქართველო - კრეატიული ინდუსტრიების განვითარების ხელშეწყობა და დახმარება" />
     <meta name="keywords" content="შემოქმედებითი საქართველო, კრეატიული ინდუსტრიები, კონკურსები, გრანტები, დაფინანსება" />
     <title>შემოქმედებითი საქართველო | Creative Georgia</title>
-    <script type="module" crossorigin src="/assets/index-CWIfwt2D.js"></script>
+    <!-- Runtime API Configuration - MUST be before module scripts -->
+    <script>
+      // Production API base URL - Set before Vue app loads
+      (function() {
+        if (window.location.origin.includes('creative.buildweb.dev') || 
+            window.location.origin.includes('creative-georgia.ge')) {
+          window.__API_BASE_URL__ = 'https://creative-api.buildweb.dev/api';
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-BjBYBXDs.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-CFbhwc1u.css">
   </head>
   <body>
