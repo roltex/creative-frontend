@@ -1,0 +1,1 @@
+function c(t){if(!t)return"";if(t.startsWith("http://")||t.startsWith("https://"))return t;const s="http://localhost:8000/api".replace("/api",""),r=t.startsWith("/")?t.slice(1):t;return`${s}/storage/${r}`}export{c as g};
