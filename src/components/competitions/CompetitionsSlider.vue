@@ -96,7 +96,7 @@
                 
                 <!-- Competition Description -->
                 <p class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
-                  {{ competition.description[locale as 'ka' | 'en'] }}
+                  {{ stripHtml(competition.description[locale as 'ka' | 'en']) }}
                 </p>
               </div>
               
@@ -149,7 +149,7 @@ import { Autoplay } from 'swiper/modules'
 import { format } from 'date-fns'
 import { ka } from 'date-fns/locale'
 import type { Swiper as SwiperType } from 'swiper'
-import { getImageUrl } from '../../utils/imageUrl'
+import { getImageUrl, stripHtml } from '../../utils/imageUrl'
 import { useCompetitionsStore } from '../../stores/competitions'
 
 interface Props {

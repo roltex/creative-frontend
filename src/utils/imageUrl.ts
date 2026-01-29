@@ -68,3 +68,31 @@ export function getImageUrls(imagePaths: string[] | null | undefined): string[] 
   return imagePaths.map(path => getImageUrl(path)).filter(url => url !== '')
 }
 
+/**
+ * Strip HTML tags from a string
+ * Useful for displaying rich text content as plain text
+ */
+export function stripHtml(html: string | null | undefined): string {
+  if (!html) {
+    return ''
+  }
+  
+  // Create a temporary div to parse HTML
+  if (typeof document !== 'undefined') {
+    const tmp = document.createElement('div')
+    tmp.innerHTML = html
+    return tmp.textContent || tmp.innerText || ''
+  }
+  
+  // Fallback for SSR: use regex to strip tags
+  return html
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/&nbsp;/g, ' ') // Replace &nbsp; with space
+    .replace(/&amp;/g, '&')  // Replace &amp; with &
+    .replace(/&lt;/g, '<')   // Replace &lt; with <
+    .replace(/&gt;/g, '>')   // Replace &gt; with >
+    .replace(/&quot;/g, '"') // Replace &quot; with "
+    .replace(/&#39;/g, "'")  // Replace &#39; with '
+    .trim()
+}
+

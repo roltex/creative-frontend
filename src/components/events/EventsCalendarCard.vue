@@ -44,7 +44,7 @@
         {{ currentEvent.title[$i18n.locale as 'ka' | 'en'] }}
       </h3>
       <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-        {{ currentEvent.description[$i18n.locale as 'ka' | 'en'] }}
+        {{ stripHtml(currentEvent.description[$i18n.locale as 'ka' | 'en']) }}
       </p>
       
       <!-- Event Details -->
@@ -86,7 +86,7 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { MapPin, Users } from 'lucide-vue-next'
 import { format } from 'date-fns'
-import { getImageUrl } from '../../utils/imageUrl'
+import { getImageUrl, stripHtml } from '../../utils/imageUrl'
 import type { Event } from '../../types'
 
 interface Props {
