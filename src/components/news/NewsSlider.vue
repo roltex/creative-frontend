@@ -138,7 +138,7 @@ const currentPage = ref(1)
 
 // Computed properties for navigation state
 const totalPages = computed(() => {
-  let filtered = articles || []
+  let filtered = articles.value || []
   if (props.category) {
     filtered = filtered.filter(a => a.category === props.category)
   }
@@ -169,7 +169,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const displayedArticles = computed(() => {
-  let filtered = articles || []
+  let filtered = articles.value || []
   
   if (props.category) {
     filtered = filtered.filter(a => a.category === props.category)
