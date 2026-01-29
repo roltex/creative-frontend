@@ -1,5 +1,5 @@
 <template>
-  <div class="relative  bg-gray-50">
+  <div class="relative bg-white">
     <!-- Header -->
     <div class="text-center mb-12">
       <h2 class="text-4xl font-bold text-gray-900 mb-4">
