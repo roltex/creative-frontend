@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { Calendar } from 'lucide-vue-next'
 import { format } from 'date-fns'
 import { useEventsStore } from '../../stores/events'
@@ -47,10 +48,10 @@ interface Props {
 const props = defineProps<Props>()
 const eventsStore = useEventsStore()
 
-const { events, initialized } = eventsStore
+const { events, initialized } = storeToRefs(eventsStore)
 
 const displayedEvents = computed(() => {
-  let filtered = events || []
+  let filtered = events.value || []
   
   if (props.type) {
     filtered = filtered.filter(e => e.type === props.type)

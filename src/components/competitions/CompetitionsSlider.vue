@@ -142,6 +142,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 import { ChevronLeft, ChevronRight, Trophy, Calendar } from 'lucide-vue-next'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay } from 'swiper/modules'
@@ -164,7 +165,7 @@ const swiper = ref<SwiperType | null>(null)
 const modules = [Autoplay]
 const competitionsStore = useCompetitionsStore()
 
-const { competitions, initialized } = competitionsStore
+const { competitions, initialized } = storeToRefs(competitionsStore)
 
 const onSwiper = (swiperInstance: SwiperType) => {
   swiper.value = swiperInstance
@@ -183,7 +184,7 @@ const slideRight = () => {
 }
 
 const displayedCompetitions = computed(() => {
-  let filtered = competitions || []
+  let filtered = competitions.value || []
   
   if (props.status) {
     filtered = filtered.filter(c => c.status === props.status)
