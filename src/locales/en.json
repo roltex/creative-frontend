@@ -622,7 +622,9 @@
     "pageNotFound": "Page not found",
     "somethingWentWrong": "Something went wrong",
     "apply": "Apply",
-    "year": "Year"
+    "year": "Year",
+    "page": "Page",
+    "of": "of"
   },
   "successStory": {
     "story": "Story",

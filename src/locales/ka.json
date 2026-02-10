@@ -641,7 +641,9 @@
     "pageNotFound": "გვერდი ვერ მოიძებნა",
     "somethingWentWrong": "რაღაც არასწორად წავიდა",
     "apply": "განაცხადი",
-    "year": "წელი"
+    "year": "წელი",
+    "page": "გვერდი",
+    "of": "/"
   },
   "successStory": {
     "story": "ისტორია",

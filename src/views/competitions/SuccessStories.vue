@@ -66,31 +66,41 @@
     </div>
 
     <!-- Success Stories Grid -->
-    <div v-else-if="successStories.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-      <RouterLink
-        v-for="story in successStories" 
-        :key="story.id" 
-        :to="{ name: 'success-story-details', params: { slug: story.slug } }"
-        class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
-      >
-        <div class="relative h-64 overflow-hidden">
-          <img :src="getImageUrl(story.image)" :alt="typeof story.name === 'object' ? story.name[locale as 'ka' | 'en'] : story.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 right-4">
-            <h3 class="text-2xl font-bold text-white mb-2 font-headline">{{ typeof story.name === 'object' ? story.name[locale as 'ka' | 'en'] : story.name }}</h3>
-            <p class="text-white/90 text-sm line-clamp-2">{{ typeof story.category === 'object' ? story.category[locale as 'ka' | 'en'] : story.category }}</p>
+    <div v-else-if="successStories.length > 0">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+        <RouterLink
+          v-for="story in paginatedStories" 
+          :key="story.id" 
+          :to="{ name: 'success-story-details', params: { slug: story.slug } }"
+          class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
+        >
+          <div class="relative h-64 overflow-hidden">
+            <img :src="getImageUrl(story.image)" :alt="typeof story.name === 'object' ? story.name[locale as 'ka' | 'en'] : story.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <h3 class="text-2xl font-bold text-white mb-2 font-headline">{{ typeof story.name === 'object' ? story.name[locale as 'ka' | 'en'] : story.name }}</h3>
+              <p class="text-white/90 text-sm line-clamp-2">{{ typeof story.category === 'object' ? story.category[locale as 'ka' | 'en'] : story.category }}</p>
+            </div>
           </div>
-        </div>
-        <div class="p-6">
-          <p class="text-gray-700 leading-relaxed mb-4">{{ typeof story.description === 'object' ? story.description[locale as 'ka' | 'en'] : story.description }}</p>
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-500">{{ story.year }}</span>
-            <span class="text-primary-600 hover:text-primary-700 font-medium text-sm">
-              {{ $t('successStory.moreInfo') }} →
-            </span>
+          <div class="p-6">
+            <p class="text-gray-700 leading-relaxed mb-4">{{ typeof story.description === 'object' ? story.description[locale as 'ka' | 'en'] : story.description }}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">{{ story.year }}</span>
+              <span class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+                {{ $t('successStory.moreInfo') }} →
+              </span>
+            </div>
           </div>
-        </div>
-      </RouterLink>
+        </RouterLink>
+      </div>
+      
+      <!-- Pagination -->
+      <Pagination
+        v-if="totalPages > 1"
+        v-model:currentPage="currentPage"
+        :totalPages="totalPages"
+        class="mb-16"
+      />
     </div>
 
     <!-- Empty State -->
@@ -122,16 +132,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { getImageUrl } from '../../utils/imageUrl'
 import api from '../../api/axios'
+import Pagination from '../../components/common/Pagination.vue'
 
 const { locale } = useI18n()
 const successStories = ref<any[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+// Pagination
+const currentPage = ref(1)
+const itemsPerPage = 9
+
+// Paginated stories
+const paginatedStories = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return successStories.value.slice(start, end)
+})
+
+// Total pages
+const totalPages = computed(() => {
+  return Math.ceil(successStories.value.length / itemsPerPage)
+})
 
 onMounted(async () => {
   try {
