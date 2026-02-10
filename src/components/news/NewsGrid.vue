@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- Loading State -->
-    <div v-if="loading || !initialized" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="i in limit || 6" :key="i" class="card">
+    <div v-if="isLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-for="i in perPage" :key="i" class="card">
         <div class="aspect-16-9 skeleton"></div>
         <div class="p-6 space-y-3">
           <div class="skeleton h-4 w-20"></div>
@@ -14,10 +14,10 @@
     </div>
 
     <!-- News Grid -->
-    <div v-else-if="initialized && articles && articles.length > 0">
+    <div v-else-if="articles.length > 0">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <RouterLink
-          v-for="article in paginatedArticles"
+          v-for="article in articles"
           :key="article.id"
           :to="{ name: 'news-article', params: { slug: article.slug } }"
           class="card-hover group block"
@@ -91,12 +91,11 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { Newspaper } from 'lucide-vue-next'
 import { format } from 'date-fns'
 import { getImageUrl } from '../../utils/imageUrl'
-import { useNewsStore } from '../../stores/news'
 import Pagination from '../common/Pagination.vue'
+import api from '../../api/axios'
 
 interface Props {
   limit?: number
@@ -104,66 +103,79 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { } = useI18n()
-const newsStore = useNewsStore()
 
-// Pagination
+// Local state for server-side pagination
+const articles = ref<any[]>([])
+const isLoading = ref(false)
 const currentPage = ref(1)
-const itemsPerPage = 9
+const totalPages = ref(1)
+const perPage = props.limit || 9
 
-const articles = computed(() => newsStore.articles)
-const initialized = computed(() => newsStore.initialized)
-const loading = computed(() => newsStore.loading)
+// Fetch articles from API with pagination
+const fetchArticles = async (page: number = 1) => {
+  isLoading.value = true
+  
+  try {
+    const params: any = {
+      page,
+      per_page: perPage
+    }
+    
+    if (props.category) {
+      params.category = props.category
+    }
+    
+    const response = await api.get('/news', { params })
+    
+    if (response.data.success) {
+      articles.value = Array.isArray(response.data.data) ? response.data.data : []
+      
+      // Update pagination from response meta
+      if (response.data.meta) {
+        currentPage.value = response.data.meta.current_page || page
+        totalPages.value = response.data.meta.last_page || 1
+      } else {
+        totalPages.value = 1
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch articles:', err)
+    articles.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
 
-const displayedArticles = computed(() => {
-  let filtered = articles.value || []
-  
-  if (props.category) {
-    filtered = filtered.filter(a => a.category === props.category)
+// Watch for page changes
+watch(currentPage, (newPage) => {
+  if (!props.limit) {
+    fetchArticles(newPage)
   }
-  
-  if (props.limit) {
-    return filtered.slice(0, props.limit)
-  }
-  
-  return filtered
 })
 
-// Paginated articles
-const paginatedArticles = computed(() => {
-  if (props.limit) {
-    return displayedArticles.value
-  }
-  const start = (currentPage.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
-  return displayedArticles.value.slice(start, end)
-})
-
-// Total pages
-const totalPages = computed(() => {
-  if (props.limit) return 1
-  return Math.ceil(displayedArticles.value.length / itemsPerPage)
-})
-
-// Reset page when category changes
+// Watch for category changes
 watch(() => props.category, () => {
   currentPage.value = 1
+  fetchArticles(1)
 })
 
 const formatDate = (date: string) => {
-  return format(new Date(date), 'MMM dd, yyyy')
+  if (!date) return ''
+  try {
+    return format(new Date(date), 'MMM dd, yyyy')
+  } catch {
+    return ''
+  }
 }
 
 const stripHtml = (html: string): string => {
+  if (!html) return ''
   const tmp = document.createElement('div')
   tmp.innerHTML = html
   return tmp.textContent || tmp.innerText || ''
 }
 
-onMounted(async () => {
-  // Always fetch articles if not initialized
-  if (!initialized.value) {
-    await newsStore.fetchArticles()
-  }
+onMounted(() => {
+  fetchArticles(1)
 })
 </script>

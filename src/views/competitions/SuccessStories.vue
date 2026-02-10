@@ -12,15 +12,9 @@
 
     <!-- Loading State - Skeleton Loader -->
     <div v-if="loading" class="animate-pulse">
-      <!-- Hero Section Skeleton -->
-      <div class="text-center mb-16">
-        <div class="h-12 bg-gray-200 rounded-lg mb-6 max-w-md mx-auto"></div>
-        <div class="h-6 bg-gray-200 rounded-lg max-w-3xl mx-auto"></div>
-      </div>
-
       <!-- Success Stories Grid Skeleton -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        <div v-for="i in 6" :key="i" class="bg-white rounded-3xl shadow-lg overflow-hidden">
+        <div v-for="i in perPage" :key="i" class="bg-white rounded-3xl shadow-lg overflow-hidden">
           <!-- Image Skeleton -->
           <div class="relative h-64 bg-gray-200">
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -47,16 +41,6 @@
           </div>
         </div>
       </div>
-
-      <!-- CTA Section Skeleton -->
-      <section class="bg-gradient-to-r from-gray-200 to-gray-300 rounded-3xl p-8 lg:p-12 text-center">
-        <div class="h-10 bg-gray-300 rounded-lg w-64 mx-auto mb-4"></div>
-        <div class="h-6 bg-gray-300 rounded-lg w-96 mx-auto mb-8"></div>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <div class="h-12 bg-gray-300 rounded-full w-48"></div>
-          <div class="h-12 bg-gray-300 rounded-full w-48"></div>
-        </div>
-      </section>
     </div>
 
     <!-- Error State -->
@@ -69,7 +53,7 @@
     <div v-else-if="successStories.length > 0">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
         <RouterLink
-          v-for="story in paginatedStories" 
+          v-for="story in successStories" 
           :key="story.id" 
           :to="{ name: 'success-story-details', params: { slug: story.slug } }"
           class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
@@ -110,7 +94,7 @@
     </div>
 
     <!-- CTA Section -->
-    <section class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-3xl p-8 lg:p-12 text-white text-center">
+    <section v-if="!loading" class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-3xl p-8 lg:p-12 text-white text-center">
       <h2 class="text-3xl font-bold mb-4 font-headline">{{ $t('successStory.readyToCreate') }}</h2>
       <p class="text-xl opacity-90 mb-8">{{ $t('successStory.joinCreative') }}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -132,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { getImageUrl } from '../../utils/imageUrl'
@@ -144,38 +128,52 @@ const successStories = ref<any[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-// Pagination
+// Server-side pagination
 const currentPage = ref(1)
-const itemsPerPage = 9
+const totalPages = ref(1)
+const perPage = 9
 
-// Paginated stories
-const paginatedStories = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
-  return successStories.value.slice(start, end)
-})
-
-// Total pages
-const totalPages = computed(() => {
-  return Math.ceil(successStories.value.length / itemsPerPage)
-})
-
-onMounted(async () => {
+// Fetch success stories with pagination
+const fetchSuccessStories = async (page: number = 1) => {
+  loading.value = true
+  error.value = null
+  
   try {
-    loading.value = true
-    const response = await api.get('/success-stories')
+    const response = await api.get('/success-stories', {
+      params: {
+        page,
+        per_page: perPage
+      }
+    })
     
     if (response.data.success) {
       successStories.value = response.data.data || []
+      
+      // Update pagination from response meta
+      if (response.data.meta) {
+        currentPage.value = response.data.meta.current_page || page
+        totalPages.value = response.data.meta.last_page || 1
+      } else {
+        totalPages.value = 1
+      }
     } else {
       error.value = 'Failed to load success stories'
     }
   } catch (err: any) {
     console.error('Failed to fetch success stories:', err)
     error.value = err.message || 'Failed to load success stories'
+    successStories.value = []
   } finally {
     loading.value = false
   }
+}
+
+// Watch for page changes
+watch(currentPage, (newPage) => {
+  fetchSuccessStories(newPage)
+})
+
+onMounted(() => {
+  fetchSuccessStories(1)
 })
 </script>
-

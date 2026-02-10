@@ -1,15 +1,15 @@
 <template>
   <div>
     <!-- Loading State -->
-    <div v-if="isLoading || !isInitialized" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <CompetitionCardSkeleton v-for="i in limit || 6" :key="i" />
+    <div v-if="isLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <CompetitionCardSkeleton v-for="i in perPage" :key="i" />
     </div>
 
     <!-- Competitions Grid -->
-    <div v-else-if="displayedCompetitions.length > 0">
+    <div v-else-if="competitions.length > 0">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CompetitionCard
-          v-for="competition in paginatedCompetitions"
+          v-for="competition in competitions"
           :key="competition.id"
           :competition="competition"
         />
@@ -36,10 +36,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { Trophy } from 'lucide-vue-next'
-import { useCompetitionsStore } from '../../stores/competitions'
 import CompetitionCard from './CompetitionCard.vue'
 import CompetitionCardSkeleton from './CompetitionCardSkeleton.vue'
 import Pagination from '../common/Pagination.vue'
+import api from '../../api/axios'
 
 interface Props {
   limit?: number
@@ -47,92 +47,70 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const competitionsStore = useCompetitionsStore()
 
-const { competitions, loading, initialized } = competitionsStore
-const localCompetitions = ref<any[]>([])
-const localLoading = ref(false)
-const localInitialized = ref(false)
-
-// Pagination
+// Local state for server-side pagination
+const competitions = ref<any[]>([])
+const isLoading = ref(false)
 const currentPage = ref(1)
-const itemsPerPage = 9
+const totalPages = ref(1)
+const perPage = props.limit || 9
 
-// Fetch competitions based on status
-const fetchByStatus = async () => {
-  if (!props.status) {
-    // If no status specified, use store competitions
-    localCompetitions.value = competitions.value || []
-    localInitialized.value = initialized.value
-    return
-  }
-
-  localLoading.value = true
+// Fetch competitions from API with pagination
+const fetchCompetitions = async (page: number = 1) => {
+  isLoading.value = true
+  
   try {
-    let fetched: any[] = []
-    
-    if (props.status === 'current') {
-      fetched = await competitionsStore.fetchCurrent(props.limit || 100)
-    } else if (props.status === 'completed' || props.status === 'archive') {
-      fetched = await competitionsStore.fetchCompleted(props.limit || 100)
-    } else if (props.status === 'upcoming') {
-      fetched = await competitionsStore.fetchUpcoming(props.limit || 100)
+    let endpoint = '/competitions'
+    const params: any = {
+      page,
+      per_page: perPage
     }
     
-    localCompetitions.value = fetched || []
-    localInitialized.value = true
+    // Use specific endpoints based on status
+    if (props.status === 'current') {
+      endpoint = '/competitions/current'
+    } else if (props.status === 'completed' || props.status === 'archive') {
+      endpoint = '/competitions/completed'
+    } else if (props.status === 'upcoming') {
+      endpoint = '/competitions/upcoming'
+    }
+    
+    const response = await api.get(endpoint, { params })
+    
+    if (response.data.success) {
+      competitions.value = response.data.data || []
+      
+      // Update pagination from response meta
+      if (response.data.meta) {
+        currentPage.value = response.data.meta.current_page || page
+        totalPages.value = response.data.meta.last_page || 1
+      } else {
+        // If no meta, calculate based on total items (fallback)
+        totalPages.value = 1
+      }
+    }
   } catch (err) {
     console.error('Failed to fetch competitions:', err)
-    localCompetitions.value = []
-    localInitialized.value = true
+    competitions.value = []
   } finally {
-    localLoading.value = false
+    isLoading.value = false
   }
 }
 
-const displayedCompetitions = computed(() => {
-  // Use local competitions if status is specified, otherwise use store competitions
-  const sourceCompetitions = props.status ? localCompetitions.value : (competitions.value || [])
-  
-  if (props.limit && sourceCompetitions.length > props.limit) {
-    return sourceCompetitions.slice(0, props.limit)
+// Watch for page changes
+watch(currentPage, (newPage) => {
+  if (!props.limit) {
+    fetchCompetitions(newPage)
   }
-  
-  return sourceCompetitions
 })
 
-// Paginated competitions
-const paginatedCompetitions = computed(() => {
-  if (props.limit) {
-    return displayedCompetitions.value
-  }
-  const start = (currentPage.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
-  return displayedCompetitions.value.slice(start, end)
-})
-
-// Total pages
-const totalPages = computed(() => {
-  if (props.limit) return 1
-  return Math.ceil(displayedCompetitions.value.length / itemsPerPage)
-})
-
-// Reset page when status changes
+// Watch for status changes
 watch(() => props.status, () => {
   currentPage.value = 1
+  fetchCompetitions(1)
 })
 
-const isLoading = computed(() => localLoading.value || (props.status ? false : loading.value))
-const isInitialized = computed(() => props.status ? localInitialized.value : initialized.value)
-
-onMounted(async () => {
-  if (props.status) {
-    // Fetch by status if specified
-    await fetchByStatus()
-  } else {
-    // Otherwise use store data (for homepage, etc.)
-    localCompetitions.value = competitions.value || []
-    localInitialized.value = initialized.value
-  }
+onMounted(() => {
+  fetchCompetitions(1)
 })
 </script>
