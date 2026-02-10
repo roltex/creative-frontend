@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { Trophy } from 'lucide-vue-next'
 import CompetitionCard from './CompetitionCard.vue'
 import CompetitionCardSkeleton from './CompetitionCardSkeleton.vue'
@@ -60,22 +60,22 @@ const fetchCompetitions = async (page: number = 1) => {
   isLoading.value = true
   
   try {
-    let endpoint = '/competitions'
+    // Always use main /competitions endpoint with status filter for pagination support
     const params: any = {
       page,
       per_page: perPage
     }
     
-    // Use specific endpoints based on status
+    // Map status to API status parameter
     if (props.status === 'current') {
-      endpoint = '/competitions/current'
+      params.status = 'current'
     } else if (props.status === 'completed' || props.status === 'archive') {
-      endpoint = '/competitions/completed'
+      params.status = 'completed'
     } else if (props.status === 'upcoming') {
-      endpoint = '/competitions/upcoming'
+      params.status = 'upcoming'
     }
     
-    const response = await api.get(endpoint, { params })
+    const response = await api.get('/competitions', { params })
     
     if (response.data.success) {
       competitions.value = response.data.data || []
@@ -85,7 +85,6 @@ const fetchCompetitions = async (page: number = 1) => {
         currentPage.value = response.data.meta.current_page || page
         totalPages.value = response.data.meta.last_page || 1
       } else {
-        // If no meta, calculate based on total items (fallback)
         totalPages.value = 1
       }
     }
