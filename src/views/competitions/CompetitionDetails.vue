@@ -1,42 +1,40 @@
 <template>
-  <div>
+  <div class="container-fluid py-8 lg:py-10">
     <!-- Loading State -->
     <div v-if="loading" class="animate-pulse">
-      <!-- Image Skeleton -->
-      <div class="bg-gray-200 w-full" style="aspect-ratio: 16/9;"></div>
-      <!-- Content Skeleton -->
-      <div class="container-fluid -mt-12 lg:-mt-20 relative z-10">
-        <div class="max-w-4xl mx-auto">
-          <div class="bg-white rounded-3xl shadow-xl p-8 lg:p-12">
-            <div class="flex gap-3 mb-6">
-              <div class="h-8 bg-gray-200 rounded-full w-28"></div>
-              <div class="h-8 bg-gray-200 rounded-full w-24"></div>
+      <div class="bg-white rounded-3xl shadow-lg overflow-hidden mb-8">
+        <div class="flex flex-col lg:flex-row">
+          <div class="w-full lg:w-[30%] bg-gray-200 min-h-[280px] lg:min-h-[360px]"></div>
+          <div class="w-full lg:w-[70%] p-8 lg:p-10 space-y-5">
+            <div class="flex gap-3">
+              <div class="h-7 bg-gray-200 rounded-full w-28"></div>
+              <div class="h-7 bg-gray-200 rounded-full w-24"></div>
             </div>
-            <div class="space-y-3 mb-8">
-              <div class="h-10 bg-gray-200 rounded-lg w-full"></div>
-              <div class="h-10 bg-gray-200 rounded-lg w-3/4"></div>
-            </div>
-            <div class="flex flex-wrap gap-6 mb-8">
-              <div class="h-12 bg-gray-200 rounded-xl w-48"></div>
-              <div class="h-12 bg-gray-200 rounded-xl w-48"></div>
-            </div>
-            <div class="h-14 bg-gray-200 rounded-full w-56"></div>
-          </div>
-          <div class="bg-white rounded-3xl shadow-lg p-8 lg:p-12 mt-6">
-            <div class="h-8 bg-gray-200 rounded-lg w-64 mb-6"></div>
             <div class="space-y-3">
-              <div class="h-4 bg-gray-200 rounded w-full"></div>
-              <div class="h-4 bg-gray-200 rounded w-full"></div>
-              <div class="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div class="h-4 bg-gray-200 rounded w-4/6"></div>
+              <div class="h-9 bg-gray-200 rounded-lg w-full"></div>
+              <div class="h-9 bg-gray-200 rounded-lg w-3/4"></div>
             </div>
+            <div class="flex gap-4">
+              <div class="h-14 bg-gray-200 rounded-2xl w-48"></div>
+              <div class="h-14 bg-gray-200 rounded-2xl w-48"></div>
+            </div>
+            <div class="h-13 bg-gray-200 rounded-full w-52"></div>
           </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl shadow-lg p-8 lg:p-12">
+        <div class="h-8 bg-gray-200 rounded-lg w-64 mb-6"></div>
+        <div class="space-y-3">
+          <div class="h-4 bg-gray-200 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+          <div class="h-4 bg-gray-200 rounded w-4/6"></div>
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="container-fluid text-center py-20">
+    <div v-else-if="error" class="text-center py-20">
       <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $t('common.error') }}</h2>
       <p class="text-gray-600 mb-6">{{ error }}</p>
       <RouterLink
@@ -50,28 +48,26 @@
 
     <!-- Competition Details -->
     <div v-else-if="competition">
-      <!-- Full-bleed Image -->
-      <div class="relative bg-gray-100">
-        <img
-          v-if="competition.image"
-          :src="getImageUrl(competition.image)"
-          :alt="competition.title[$i18n.locale as 'ka' | 'en']"
-          class="w-full max-h-[75vh] object-contain mx-auto block"
-        />
-        <div v-else class="w-full flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100" style="aspect-ratio: 16/10;">
-          <Trophy class="w-32 h-32 text-primary-300" />
-        </div>
-        <!-- Subtle bottom fade for overlap effect -->
-        <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-50 to-transparent"></div>
-      </div>
+      <!-- Hero Card: 30% Image | 70% Info -->
+      <div class="bg-white rounded-3xl shadow-lg overflow-hidden mb-8">
+        <div class="flex flex-col lg:flex-row">
+          <!-- Image — 30% -->
+          <div class="w-full lg:w-[30%] bg-gray-50 flex-shrink-0">
+            <img
+              v-if="competition.image"
+              :src="getImageUrl(competition.image)"
+              :alt="competition.title[$i18n.locale as 'ka' | 'en']"
+              class="w-full h-full object-cover lg:min-h-full"
+            />
+            <div v-else class="w-full h-full min-h-[280px] flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
+              <Trophy class="w-24 h-24 text-primary-300" />
+            </div>
+          </div>
 
-      <!-- Overlapping Content Card -->
-      <div class="container-fluid -mt-12 lg:-mt-20 relative z-10 pb-8 lg:pb-12">
-        <div class="max-w-4xl mx-auto">
-          <!-- Main Info Card -->
-          <div class="bg-white rounded-3xl shadow-xl p-8 lg:p-12">
+          <!-- Info — 70% -->
+          <div class="w-full lg:w-[70%] p-8 lg:p-10 xl:p-12 flex flex-col justify-center">
             <!-- Badges -->
-            <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="flex flex-wrap items-center gap-2.5 mb-5">
               <span v-if="competition.category" class="px-4 py-1.5 bg-secondary-50 text-secondary-700 border border-secondary-200 rounded-full text-sm font-semibold">
                 {{ competition.category }}
               </span>
@@ -88,26 +84,25 @@
             </div>
 
             <!-- Title -->
-            <h1 class="text-3xl lg:text-5xl font-bold text-gray-900 mb-8 font-headline leading-tight">
+            <h1 class="text-2xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-6 font-headline leading-tight">
               {{ competition.title[$i18n.locale as 'ka' | 'en'] }}
             </h1>
 
-            <!-- Date chips -->
+            <!-- Dates -->
             <div class="flex flex-wrap items-center gap-4 mb-8">
               <div
                 v-if="(competition as any).start_date || competition.startDate"
-                class="flex items-center gap-3 bg-primary-50 rounded-2xl px-5 py-3"
+                class="flex items-center gap-3 bg-primary-50 rounded-2xl px-4 py-2.5"
               >
-                <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-                  <Calendar class="w-5 h-5 text-primary-600" />
+                <div class="w-9 h-9 rounded-xl bg-primary-100 flex items-center justify-center">
+                  <Calendar class="w-4 h-4 text-primary-600" />
                 </div>
                 <div>
                   <p class="text-xs text-primary-600 font-medium uppercase tracking-wide">{{ $t('competitions.startDate') }}</p>
-                  <p class="text-base font-bold text-gray-900">{{ formatDate((competition as any).start_date || competition.startDate, locale) }}</p>
+                  <p class="text-sm font-bold text-gray-900">{{ formatDate((competition as any).start_date || competition.startDate, locale) }}</p>
                 </div>
               </div>
 
-              <!-- Separator arrow -->
               <ChevronRight
                 v-if="((competition as any).start_date || competition.startDate) && ((competition as any).end_date || competition.endDate)"
                 class="w-5 h-5 text-gray-300 hidden sm:block"
@@ -115,14 +110,14 @@
 
               <div
                 v-if="(competition as any).end_date || competition.endDate"
-                class="flex items-center gap-3 bg-red-50 rounded-2xl px-5 py-3"
+                class="flex items-center gap-3 bg-red-50 rounded-2xl px-4 py-2.5"
               >
-                <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-                  <Calendar class="w-5 h-5 text-red-500" />
+                <div class="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center">
+                  <Calendar class="w-4 h-4 text-red-500" />
                 </div>
                 <div>
                   <p class="text-xs text-red-500 font-medium uppercase tracking-wide">{{ $t('competitions.endDate') }}</p>
-                  <p class="text-base font-bold text-gray-900">{{ formatDate((competition as any).end_date || competition.endDate, locale) }}</p>
+                  <p class="text-sm font-bold text-gray-900">{{ formatDate((competition as any).end_date || competition.endDate, locale) }}</p>
                 </div>
               </div>
             </div>
@@ -138,29 +133,29 @@
               </RouterLink>
             </div>
           </div>
-
-          <!-- Description Section -->
-          <div class="bg-white rounded-3xl shadow-lg p-8 lg:p-12 mt-6">
-            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 font-headline">{{ $t('competitions.fullDescription') }}</h2>
-            <div 
-              class="prose prose-lg max-w-none text-gray-700"
-              v-html="competition.description[$i18n.locale as 'ka' | 'en']"
-            ></div>
-          </div>
-
-          <!-- CTA Section -->
-          <div class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-3xl p-8 lg:p-12 text-white text-center mt-6">
-            <h2 class="text-3xl font-bold mb-4 font-headline">{{ $t('competitions.applyNow') }}</h2>
-            <p class="text-xl opacity-90 mb-8">{{ $t('competitions.fillApplicationAndParticipate') }}</p>
-            <RouterLink
-              :to="{ name: 'application-step-1' }"
-              class="inline-flex items-center px-8 py-4 bg-white text-primary-600 hover:bg-gray-100 rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-headline"
-            >
-              <span>{{ $t('competitions.apply') }}</span>
-              <ChevronRight class="w-5 h-5 ml-2" />
-            </RouterLink>
-          </div>
         </div>
+      </div>
+
+      <!-- Description Section -->
+      <div class="bg-white rounded-3xl shadow-lg p-8 lg:p-12 mb-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 font-headline">{{ $t('competitions.fullDescription') }}</h2>
+        <div 
+          class="prose prose-lg max-w-none text-gray-700"
+          v-html="competition.description[$i18n.locale as 'ka' | 'en']"
+        ></div>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-3xl p-8 lg:p-12 text-white text-center">
+        <h2 class="text-3xl font-bold mb-4 font-headline">{{ $t('competitions.applyNow') }}</h2>
+        <p class="text-xl opacity-90 mb-8">{{ $t('competitions.fillApplicationAndParticipate') }}</p>
+        <RouterLink
+          :to="{ name: 'application-step-1' }"
+          class="inline-flex items-center px-8 py-4 bg-white text-primary-600 hover:bg-gray-100 rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-headline"
+        >
+          <span>{{ $t('competitions.apply') }}</span>
+          <ChevronRight class="w-5 h-5 ml-2" />
+        </RouterLink>
       </div>
     </div>
   </div>
