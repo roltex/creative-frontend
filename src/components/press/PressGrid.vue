@@ -170,6 +170,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { Newspaper, ExternalLink, Search, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { usePressStore } from '../../stores/press'
 import { RouterLink } from 'vue-router'
@@ -183,6 +184,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const { locale } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const pressStore = usePressStore()
 
 const articles = computed(() => pressStore.articles)
@@ -264,6 +267,23 @@ const displayedPages = computed(() => {
   return pages
 })
 
+// Sync page number to URL query parameter
+const updateUrlPage = (page: number) => {
+  if (props.limit) return
+  const query = { ...route.query }
+  if (page > 1) {
+    query.page = String(page)
+  } else {
+    delete query.page
+  }
+  router.replace({ query })
+}
+
+// Update URL when page changes
+watch(currentPage, (newPage) => {
+  updateUrlPage(newPage)
+})
+
 // Reset page when filters change
 watch([searchQuery, selectedMedia], () => {
   currentPage.value = 1
@@ -271,6 +291,12 @@ watch([searchQuery, selectedMedia], () => {
 
 // Fetch articles on mount if not initialized
 onMounted(async () => {
+  // Read page from URL query on mount
+  const urlPage = parseInt(route.query.page as string)
+  if (!props.limit && urlPage && urlPage > 0) {
+    currentPage.value = urlPage
+  }
+  
   if (!initialized.value) {
     await pressStore.fetchArticles()
   }

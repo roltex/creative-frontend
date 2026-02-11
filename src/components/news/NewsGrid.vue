@@ -92,6 +92,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { Newspaper } from 'lucide-vue-next'
 import { getImageUrl } from '../../utils/imageUrl'
 import { formatDate } from '../../utils/dateFormat'
@@ -105,6 +106,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const { locale } = useI18n()
+const route = useRoute()
+const router = useRouter()
 
 // Local state for server-side pagination
 const articles = ref<any[]>([])
@@ -112,6 +115,18 @@ const isLoading = ref(false)
 const currentPage = ref(1)
 const totalPages = ref(1)
 const perPage = props.limit || 9
+
+// Sync page number to URL query parameter
+const updateUrlPage = (page: number) => {
+  if (props.limit) return
+  const query = { ...route.query }
+  if (page > 1) {
+    query.page = String(page)
+  } else {
+    delete query.page
+  }
+  router.replace({ query })
+}
 
 // Fetch articles from API with pagination
 const fetchArticles = async (page: number = 1) => {
@@ -151,6 +166,7 @@ const fetchArticles = async (page: number = 1) => {
 // Watch for page changes
 watch(currentPage, (newPage) => {
   if (!props.limit) {
+    updateUrlPage(newPage)
     fetchArticles(newPage)
   }
 })
@@ -169,6 +185,9 @@ const stripHtml = (html: string): string => {
 }
 
 onMounted(() => {
-  fetchArticles(1)
+  const urlPage = parseInt(route.query.page as string)
+  const initialPage = (!props.limit && urlPage && urlPage > 0) ? urlPage : 1
+  currentPage.value = initialPage
+  fetchArticles(initialPage)
 })
 </script>

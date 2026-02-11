@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Trophy } from 'lucide-vue-next'
 import CompetitionCard from './CompetitionCard.vue'
 import CompetitionCardSkeleton from './CompetitionCardSkeleton.vue'
@@ -47,6 +48,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const route = useRoute()
+const router = useRouter()
 
 // Local state for server-side pagination
 const competitions = ref<any[]>([])
@@ -54,6 +57,18 @@ const isLoading = ref(false)
 const currentPage = ref(1)
 const totalPages = ref(1)
 const perPage = props.limit || 9
+
+// Sync page number to URL query parameter
+const updateUrlPage = (page: number) => {
+  if (props.limit) return // Don't sync URL when used with limit (e.g., homepage)
+  const query = { ...route.query }
+  if (page > 1) {
+    query.page = String(page)
+  } else {
+    delete query.page
+  }
+  router.replace({ query })
+}
 
 // Fetch competitions from API with pagination
 const fetchCompetitions = async (page: number = 1) => {
@@ -99,6 +114,7 @@ const fetchCompetitions = async (page: number = 1) => {
 // Watch for page changes
 watch(currentPage, (newPage) => {
   if (!props.limit) {
+    updateUrlPage(newPage)
     fetchCompetitions(newPage)
   }
 })
@@ -110,6 +126,10 @@ watch(() => props.status, () => {
 })
 
 onMounted(() => {
-  fetchCompetitions(1)
+  // Read page from URL query on mount
+  const urlPage = parseInt(route.query.page as string)
+  const initialPage = (!props.limit && urlPage && urlPage > 0) ? urlPage : 1
+  currentPage.value = initialPage
+  fetchCompetitions(initialPage)
 })
 </script>

@@ -117,13 +117,15 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { getImageUrl } from '../../utils/imageUrl'
 import api from '../../api/axios'
 import Pagination from '../../components/common/Pagination.vue'
 
 const { locale } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const successStories = ref<any[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -132,6 +134,17 @@ const error = ref<string | null>(null)
 const currentPage = ref(1)
 const totalPages = ref(1)
 const perPage = 9
+
+// Sync page number to URL query parameter
+const updateUrlPage = (page: number) => {
+  const query = { ...route.query }
+  if (page > 1) {
+    query.page = String(page)
+  } else {
+    delete query.page
+  }
+  router.replace({ query })
+}
 
 // Fetch success stories with pagination
 const fetchSuccessStories = async (page: number = 1) => {
@@ -170,10 +183,14 @@ const fetchSuccessStories = async (page: number = 1) => {
 
 // Watch for page changes
 watch(currentPage, (newPage) => {
+  updateUrlPage(newPage)
   fetchSuccessStories(newPage)
 })
 
 onMounted(() => {
-  fetchSuccessStories(1)
+  const urlPage = parseInt(route.query.page as string)
+  const initialPage = (urlPage && urlPage > 0) ? urlPage : 1
+  currentPage.value = initialPage
+  fetchSuccessStories(initialPage)
 })
 </script>
