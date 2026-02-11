@@ -52,14 +52,14 @@
       <div class="bg-white rounded-3xl shadow-lg overflow-hidden mb-8">
         <div class="flex flex-col lg:flex-row">
           <!-- Image — 30% -->
-          <div class="w-full lg:w-[30%] bg-gray-50 flex-shrink-0">
+          <div class="w-full lg:w-[30%] bg-gray-50 flex-shrink-0 flex items-center justify-center p-4 lg:p-6">
             <img
               v-if="competition.image"
               :src="getImageUrl(competition.image)"
               :alt="competition.title[$i18n.locale as 'ka' | 'en']"
-              class="w-full h-full object-cover lg:min-h-full"
+              class="w-full h-auto object-contain rounded-2xl"
             />
-            <div v-else class="w-full h-full min-h-[280px] flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
+            <div v-else class="w-full min-h-[280px] flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl">
               <Trophy class="w-24 h-24 text-primary-300" />
             </div>
           </div>
