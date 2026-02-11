@@ -75,7 +75,7 @@
             <h3 class="text-base font-semibold text-gray-900 line-clamp-2 mb-1">
               {{ article.title?.[$i18n.locale as 'ka' | 'en'] || article.title?.ka || article.title?.en || '' }}
             </h3>
-            <p class="text-xs text-gray-500">{{ formatDate(article.publishedAt) }}</p>
+            <p class="text-xs text-gray-500">{{ formatDate(article.publishedAt, locale) }}</p>
           </div>
 
           <!-- Media Name -->
@@ -171,10 +171,10 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Newspaper, ExternalLink, Search, ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import { format } from 'date-fns'
 import { usePressStore } from '../../stores/press'
 import { RouterLink } from 'vue-router'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 
 interface Props {
   limit?: number
@@ -182,7 +182,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { } = useI18n()
+const { locale } = useI18n()
 const pressStore = usePressStore()
 
 const articles = computed(() => pressStore.articles)
@@ -268,15 +268,6 @@ const displayedPages = computed(() => {
 watch([searchQuery, selectedMedia], () => {
   currentPage.value = 1
 })
-
-const formatDate = (date: string) => {
-  if (!date) return ''
-  try {
-    return format(new Date(date), 'MMM dd, yyyy')
-  } catch {
-    return ''
-  }
-}
 
 // Fetch articles on mount if not initialized
 onMounted(async () => {

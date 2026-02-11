@@ -78,8 +78,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { Calendar, Clock, MapPin, Users } from 'lucide-vue-next'
-import { format } from 'date-fns'
 import { getImageUrl } from '../../utils/imageUrl'
+import { getDay as getDayUtil, getMonth as getMonthUtil, getTime as getTimeUtil } from '../../utils/dateFormat'
 import type { Event } from '../../types'
 
 interface Props {
@@ -88,33 +88,10 @@ interface Props {
 
 defineProps<Props>()
 
-const { } = useI18n()
+const { locale } = useI18n()
 
-const getDay = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const d = new Date(date)
-    if (isNaN(d.getTime())) return ''
-    return format(d, 'dd')
-  } catch { return '' }
-}
-
-const getMonth = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const d = new Date(date)
-    if (isNaN(d.getTime())) return ''
-    return format(d, 'MMM')
-  } catch { return '' }
-}
-
-const getTime = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const d = new Date(date)
-    if (isNaN(d.getTime())) return ''
-    return format(d, 'h:mm a')
-  } catch { return '' }
-}
+const getDay = (date: string | null | undefined) => getDayUtil(date)
+const getMonth = (date: string | null | undefined) => getMonthUtil(date, locale.value)
+const getTime = (date: string | null | undefined) => getTimeUtil(date)
 </script>
 

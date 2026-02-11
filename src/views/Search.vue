@@ -159,7 +159,7 @@
                     ]">
                       {{ event.status }}
                     </span>
-                    <span class="text-xs text-gray-500">{{ new Date(event.start_date).toLocaleDateString('ka-GE') }}</span>
+                    <span class="text-xs text-gray-500">{{ formatLocalDate(event.start_date, locale.value) }}</span>
                   </div>
                   <h3 class="text-lg font-bold text-gray-900 mb-2 font-headline">
                     {{ $i18n.locale === 'ka' ? event.title.ka : event.title.en }}
@@ -275,6 +275,7 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { Search, X } from 'lucide-vue-next'
 import { getImageUrl } from '../utils/imageUrl'
+import { formatLocalDate } from '../utils/dateFormat'
 import { useNewsStore } from '../stores/news'
 import { useCompetitionsStore } from '../stores/competitions'
 import { useEventsStore } from '../stores/events'

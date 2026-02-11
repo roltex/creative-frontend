@@ -94,8 +94,8 @@ import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { Clock, MapPin, Users, Calendar } from 'lucide-vue-next'
-import { format } from 'date-fns'
 import { useEventsStore } from '../../stores/events'
+import { getDay as getDayUtil, getMonth as getMonthUtil, getTime as getTimeUtil } from '../../utils/dateFormat'
 
 interface Props {
   limit?: number
@@ -103,7 +103,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { } = useI18n()
+const { locale } = useI18n()
 const eventsStore = useEventsStore()
 
 const { events, initialized } = eventsStore
@@ -122,9 +122,9 @@ const displayedEvents = computed(() => {
   return filtered
 })
 
-const getDay = (date: string) => format(new Date(date), 'dd')
-const getMonth = (date: string) => format(new Date(date), 'MMM')
-const getTime = (date: string) => format(new Date(date), 'h:mm a')
+const getDay = (date: string) => getDayUtil(date)
+const getMonth = (date: string) => getMonthUtil(date, locale.value)
+const getTime = (date: string) => getTimeUtil(date)
 
 onMounted(() => {
   // Data is now loaded by the parent Home component

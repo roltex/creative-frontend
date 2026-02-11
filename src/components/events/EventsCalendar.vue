@@ -92,6 +92,7 @@ import {
   isToday as isTodayDateFns, 
   isPast 
 } from 'date-fns'
+import { ka as kaLocale, enUS } from 'date-fns/locale'
 import { useEventsStore } from '../../stores/events'
 import type { Event } from '../../types'
 
@@ -140,16 +141,9 @@ const weekDays = computed(() => {
 })
 
 const currentMonthYear = computed(() => {
-  if (locale.value === 'ka') {
-    const months = [
-      'იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი',
-      'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი'
-    ]
-    const year = currentDate.value.getFullYear()
-    const month = months[currentDate.value.getMonth()]
-    return `${month} ${year}`
-  }
-  return format(currentDate.value, 'MMMM yyyy')
+  return format(currentDate.value, 'MMMM yyyy', { 
+    locale: locale.value === 'ka' ? kaLocale : enUS 
+  })
 })
 
 const daysInMonth = computed(() => {

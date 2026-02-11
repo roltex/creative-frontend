@@ -30,7 +30,7 @@
                   {{ article.category }}
                 </span>
                 <span class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold">
-                  {{ formatDate(article.publishedAt) }}
+                  {{ formatDate(article.publishedAt, locale) }}
                 </span>
               </div>
               <h1 class="text-4xl lg:text-5xl font-bold mb-4 font-headline">
@@ -132,7 +132,7 @@
                       </h4>
                       <p class="text-xs text-gray-500 flex items-center">
                         <Clock class="w-3 h-3 mr-1" />
-                        {{ formatDate(relatedArticle.publishedAt) }}
+                        {{ formatDate(relatedArticle.publishedAt, locale) }}
                       </p>
                     </div>
                   </RouterLink>
@@ -193,13 +193,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { format } from 'date-fns'
 import { ChevronLeft, ChevronRight, X, Clock, Newspaper } from 'lucide-vue-next'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 import { useNewsStore } from '../../stores/news'
 
 const route = useRoute()
-const {  } = useI18n()
+const { locale } = useI18n()
 const newsStore = useNewsStore()
 
 const loading = computed(() => newsStore.loading)
@@ -243,10 +243,6 @@ const previousImage = () => {
   if (currentImageIndex.value > 0) {
     currentImageIndex.value--
   }
-}
-
-const formatDate = (date: string) => {
-  return format(new Date(date), 'MMM dd, yyyy')
 }
 
 onMounted(async () => {

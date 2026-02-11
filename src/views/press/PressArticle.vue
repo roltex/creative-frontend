@@ -21,7 +21,7 @@
             {{ article.title[$i18n.locale as 'ka' | 'en'] }}
           </h1>
           <div class="flex items-center space-x-4 text-gray-600">
-            <span>{{ formatDate(article.publishedAt) }}</span>
+            <span>{{ formatDate(article.publishedAt, locale) }}</span>
             <span v-if="article.viewCount">• {{ article.viewCount }} {{ $t('press.views') }}</span>
           </div>
         </header>
@@ -124,7 +124,7 @@
                       </h4>
                       <p class="text-xs text-gray-500 flex items-center">
                         <Clock class="w-3 h-3 mr-1" />
-                        {{ formatDate(relatedArticle.publishedAt) }}
+                        {{ formatDate(relatedArticle.publishedAt, locale) }}
                       </p>
                     </div>
                   </RouterLink>
@@ -166,7 +166,7 @@
                       <h4 class="text-sm font-semibold text-gray-900 group-hover:text-primary-600 line-clamp-2 leading-snug transition-colors">
                         {{ popularArticle.title[$i18n.locale as 'ka' | 'en'] }}
                       </h4>
-                      <p class="text-xs text-gray-500 mt-1">{{ formatDate(popularArticle.publishedAt) }}</p>
+                      <p class="text-xs text-gray-500 mt-1">{{ formatDate(popularArticle.publishedAt, locale) }}</p>
                     </div>
                   </RouterLink>
                 </article>
@@ -222,13 +222,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { format } from 'date-fns'
 import { ChevronLeft, ChevronRight, X, Clock } from 'lucide-vue-next'
 import { getImageUrl, getImageUrls } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 import { usePressStore } from '../../stores/press'
 
 const route = useRoute()
-const {  } = useI18n()
+const { locale } = useI18n()
 const pressStore = usePressStore()
 
 const { loading, currentArticle, articles } = pressStore
@@ -280,10 +280,6 @@ const previousImage = () => {
   if (currentImageIndex.value > 0) {
     currentImageIndex.value--
   }
-}
-
-const formatDate = (date: string) => {
-  return format(new Date(date), 'MMM dd, yyyy')
 }
 
 onMounted(async () => {

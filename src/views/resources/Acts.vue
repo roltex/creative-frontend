@@ -45,7 +45,7 @@
             {{ $i18n.locale === 'ka' ? act.title.ka : act.title.en }}
           </h3>
           <p v-if="act.date" class="text-gray-700 mb-4 leading-relaxed">
-            {{ new Date(act.date).toLocaleDateString('ka-GE') }}
+            {{ formatLocalDate(act.date, locale) }}
           </p>
           <a v-if="act.file" :href="act.file" target="_blank" 
              :class="['font-semibold flex items-center hover:underline', index % 2 === 0 ? 'text-primary-700 hover:text-primary-800' : 'text-secondary-700 hover:text-secondary-800']">
@@ -73,7 +73,7 @@
             {{ $i18n.locale === 'ka' ? regulation.title.ka : regulation.title.en }}
           </h3>
           <p v-if="regulation.date" class="text-gray-600 mb-4 text-sm">
-            {{ new Date(regulation.date).toLocaleDateString('ka-GE') }}
+            {{ formatLocalDate(regulation.date, locale) }}
           </p>
           <a v-if="regulation.file" :href="regulation.file" target="_blank" class="text-primary-600 hover:text-primary-700 font-medium flex items-center">
             ჩამოტვირთვა
@@ -112,6 +112,7 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { usePagesStore } from '../../stores/pages'
+import { formatLocalDate } from '../../utils/dateFormat'
 
 const { locale } = useI18n()
 const pagesStore = usePagesStore()

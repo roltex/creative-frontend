@@ -79,7 +79,7 @@
           <div class="flex-1 p-6 flex flex-col justify-between">
             <!-- Date -->
             <div class="text-xs text-gray-500 mb-2">
-              {{ formatDate(article.publishedAt) }}
+              {{ formatDate(article.publishedAt, locale) }}
             </div>
             
             <!-- Article Title -->
@@ -122,9 +122,8 @@ import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-vue-next'
-import { format } from 'date-fns'
-import { ka } from 'date-fns/locale'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 import { useNewsStore } from '../../stores/news'
 
 const newsStore = useNewsStore()
@@ -182,12 +181,6 @@ const displayedArticles = computed(() => {
   
   return filtered.slice(startIndex, endIndex)
 })
-
-const formatDate = (date: string) => {
-  return format(new Date(date), 'dd MMM, yyyy', { 
-    locale: locale.value === 'ka' ? ka : undefined 
-  })
-}
 
 const handleCardClick = (article: any) => {
   router.push({ name: 'news-article', params: { slug: article.slug } })

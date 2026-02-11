@@ -47,7 +47,7 @@
       <div class="space-y-2 mb-4">
         <div v-if="(competition as any).end_date || competition.endDate" class="flex items-center text-sm text-gray-500">
           <Calendar class="w-4 h-4 mr-2" />
-          <span>{{ $t('competitions.deadline') }}: {{ formatDate((competition as any).end_date || competition.endDate) }}</span>
+          <span>{{ $t('competitions.deadline') }}: {{ formatDate((competition as any).end_date || competition.endDate, locale) }}</span>
         </div>
       </div>
 
@@ -66,8 +66,8 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Trophy, Calendar } from 'lucide-vue-next'
-import { format } from 'date-fns'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 import type { Competition } from '../../types'
 
 interface Props {
@@ -75,7 +75,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { } = useI18n()
+const { locale } = useI18n()
 
 const statusClass = computed(() => {
   switch (props.competition.status) {
@@ -89,19 +89,4 @@ const statusClass = computed(() => {
       return 'bg-gray-100 text-gray-800'
   }
 })
-
-const formatDate = (date: string | null | undefined) => {
-  if (!date) return ''
-  
-  try {
-    const dateObj = new Date(date)
-    if (isNaN(dateObj.getTime())) {
-      return ''
-    }
-    return format(dateObj, 'MMM dd, yyyy')
-  } catch (error) {
-    console.error('Error formatting date:', error, date)
-    return ''
-  }
-}
 </script>

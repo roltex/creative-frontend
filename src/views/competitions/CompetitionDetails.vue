@@ -167,9 +167,9 @@
                 </p>
                 <div class="ml-6">
                   <p v-if="(competition as any).start_date || competition.startDate" class="text-sm text-gray-600 mb-1">{{ $t('competitions.startDate') }}</p>
-                  <p v-if="(competition as any).start_date || competition.startDate" class="text-base font-semibold text-gray-900 mb-2">{{ formatDate((competition as any).start_date || competition.startDate) }}</p>
+                  <p v-if="(competition as any).start_date || competition.startDate" class="text-base font-semibold text-gray-900 mb-2">{{ formatDate((competition as any).start_date || competition.startDate, locale) }}</p>
                   <p v-if="(competition as any).end_date || competition.endDate" class="text-sm text-gray-600 mb-1">{{ $t('competitions.endDate') }}</p>
-                  <p v-if="(competition as any).end_date || competition.endDate" class="text-base font-semibold text-gray-900">{{ formatDate((competition as any).end_date || competition.endDate) }}</p>
+                  <p v-if="(competition as any).end_date || competition.endDate" class="text-base font-semibold text-gray-900">{{ formatDate((competition as any).end_date || competition.endDate, locale) }}</p>
                 </div>
               </div>
             </div>
@@ -185,9 +185,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Calendar, Trophy, ChevronRight, ChevronLeft } from 'lucide-vue-next'
-import { format } from 'date-fns'
-import { ka, enUS } from 'date-fns/locale'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatLongDate as formatDate } from '../../utils/dateFormat'
 import { useCompetitionsStore } from '../../stores/competitions'
 import type { Competition } from '../../types'
 
@@ -198,21 +197,6 @@ const competitionsStore = useCompetitionsStore()
 const competition = ref<Competition | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
-
-const formatDate = (date: string | null | undefined) => {
-  if (!date) return ''
-  
-  try {
-    const dateObj = new Date(date)
-    if (isNaN(dateObj.getTime())) {
-      return ''
-    }
-    return format(dateObj, 'd MMMM yyyy', { locale: locale.value === 'ka' ? ka : enUS })
-  } catch (error) {
-    console.error('Error formatting date:', error, date)
-    return ''
-  }
-}
 
 onMounted(async () => {
   const slug = route.params.slug as string

@@ -113,7 +113,7 @@
                 <div v-if="competition.end_date || competition.endDate" class="flex items-center text-sm">
                   <Calendar class="w-4 h-4 text-red-500 mr-2" />
                   <span class="text-gray-700">{{ $t('competitions.deadline') }}: </span>
-                  <span class="font-semibold text-red-600 ml-1">{{ formatDate(competition.end_date || competition.endDate) }}</span>
+                  <span class="font-semibold text-red-600 ml-1">{{ formatDate(competition.end_date || competition.endDate, locale) }}</span>
                 </div>
               </div>
             </div>
@@ -146,10 +146,9 @@ import { storeToRefs } from 'pinia'
 import { ChevronLeft, ChevronRight, Trophy, Calendar } from 'lucide-vue-next'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay } from 'swiper/modules'
-import { format } from 'date-fns'
-import { ka } from 'date-fns/locale'
 import type { Swiper as SwiperType } from 'swiper'
 import { getImageUrl, stripHtml } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 import { useCompetitionsStore } from '../../stores/competitions'
 
 interface Props {
@@ -196,23 +195,6 @@ const displayedCompetitions = computed(() => {
   
   return filtered
 })
-
-const formatDate = (date: string | null | undefined) => {
-  if (!date) return ''
-  
-  try {
-    const dateObj = new Date(date)
-    if (isNaN(dateObj.getTime())) {
-      return ''
-    }
-    return format(dateObj, 'dd MMM, yyyy', { 
-      locale: locale.value === 'ka' ? ka : undefined 
-    })
-  } catch (error) {
-    console.error('Error formatting date:', error, date)
-    return ''
-  }
-}
 
 const handleCardClick = (competition: any) => {
   router.push({ name: 'competition-details', params: { slug: competition.slug } })

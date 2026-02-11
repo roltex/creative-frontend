@@ -171,9 +171,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Calendar, MapPin, ChevronLeft } from 'lucide-vue-next'
-import { format } from 'date-fns'
-import { ka, enUS } from 'date-fns/locale'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatFullDate, getTime } from '../../utils/dateFormat'
 import { useEventsStore } from '../../stores/events'
 import type { Event } from '../../types'
 
@@ -196,27 +195,8 @@ const getEventType = (type: string) => {
   return types[type] || 'ღონისძიება'
 }
 
-const formatDate = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const dateObj = new Date(date)
-    if (isNaN(dateObj.getTime())) return ''
-    return format(dateObj, 'EEEE, d MMMM yyyy', { locale: locale.value === 'ka' ? ka : enUS })
-  } catch {
-    return ''
-  }
-}
-
-const formatTime = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const dateObj = new Date(date)
-    if (isNaN(dateObj.getTime())) return ''
-    return format(dateObj, 'HH:mm')
-  } catch {
-    return ''
-  }
-}
+const formatDate = (date: string | null | undefined) => formatFullDate(date, locale.value)
+const formatTime = (date: string | null | undefined) => getTime(date)
 
 const getMapUrl = (location: string) => {
   // Encode the location for Google Maps embed with marker

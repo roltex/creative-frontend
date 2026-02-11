@@ -85,8 +85,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { MapPin, Users } from 'lucide-vue-next'
-import { format } from 'date-fns'
 import { getImageUrl, stripHtml } from '../../utils/imageUrl'
+import { getDay as getDayUtil, getMonth as getMonthUtil, getTime as getTimeUtil } from '../../utils/dateFormat'
 import type { Event } from '../../types'
 
 interface Props {
@@ -95,7 +95,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { } = useI18n()
+const { locale } = useI18n()
 
 const currentIndex = ref(0)
 let intervalId: number | null = null
@@ -109,32 +109,9 @@ const currentEvent = computed(() => {
   return eventsForDate.value[currentIndex.value] || eventsForDate.value[0]
 })
 
-const getDay = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const d = new Date(date)
-    if (isNaN(d.getTime())) return ''
-    return format(d, 'dd')
-  } catch { return '' }
-}
-
-const getMonth = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const d = new Date(date)
-    if (isNaN(d.getTime())) return ''
-    return format(d, 'MMM')
-  } catch { return '' }
-}
-
-const getTime = (date: string | null | undefined) => {
-  if (!date) return ''
-  try {
-    const d = new Date(date)
-    if (isNaN(d.getTime())) return ''
-    return format(d, 'HH:mm')
-  } catch { return '' }
-}
+const getDay = (date: string | null | undefined) => getDayUtil(date)
+const getMonth = (date: string | null | undefined) => getMonthUtil(date, locale.value)
+const getTime = (date: string | null | undefined) => getTimeUtil(date)
 
 const getEventType = (type: string) => {
   const types: { [key: string]: string } = {

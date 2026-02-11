@@ -46,7 +46,7 @@
             
             <!-- Date Badge -->
             <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
-              <div class="text-xs text-gray-600 text-center">{{ formatDate(article.published_at || article.publishedAt) }}</div>
+              <div class="text-xs text-gray-600 text-center">{{ formatDate(article.published_at || article.publishedAt, locale) }}</div>
             </div>
             
             <!-- Title at Bottom -->
@@ -91,9 +91,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Newspaper } from 'lucide-vue-next'
-import { format } from 'date-fns'
 import { getImageUrl } from '../../utils/imageUrl'
+import { formatDate } from '../../utils/dateFormat'
 import Pagination from '../common/Pagination.vue'
 import api from '../../api/axios'
 
@@ -103,6 +104,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { locale } = useI18n()
 
 // Local state for server-side pagination
 const articles = ref<any[]>([])
@@ -158,15 +160,6 @@ watch(() => props.category, () => {
   currentPage.value = 1
   fetchArticles(1)
 })
-
-const formatDate = (date: string) => {
-  if (!date) return ''
-  try {
-    return format(new Date(date), 'MMM dd, yyyy')
-  } catch {
-    return ''
-  }
-}
 
 const stripHtml = (html: string): string => {
   if (!html) return ''
