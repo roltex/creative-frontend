@@ -37,12 +37,6 @@
         {{ competition.title[$i18n.locale as 'ka' | 'en'] }}
       </h3>
 
-      <!-- Description -->
-      <div 
-        class="text-gray-600 mb-4 line-clamp-3 prose prose-sm max-w-none"
-        v-html="competition.description[$i18n.locale as 'ka' | 'en']"
-      ></div>
-
       <!-- Meta Info -->
       <div class="space-y-2 mb-4">
         <div v-if="(competition as any).end_date || competition.endDate" class="flex items-center text-sm text-gray-500">

@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- Loading State -->
-    <div v-if="isLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-if="isLoading" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       <CompetitionCardSkeleton v-for="i in perPage" :key="i" />
     </div>
 
     <!-- Competitions Grid -->
     <div v-else-if="competitions.length > 0">
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <CompetitionCard
           v-for="competition in competitions"
           :key="competition.id"
@@ -56,7 +56,7 @@ const competitions = ref<any[]>([])
 const isLoading = ref(false)
 const currentPage = ref(1)
 const totalPages = ref(1)
-const perPage = props.limit || 9
+const perPage = props.limit || 12
 
 // Sync page number to URL query parameter
 const updateUrlPage = (page: number) => {
