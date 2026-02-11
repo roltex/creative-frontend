@@ -71,13 +71,13 @@
                 {{ slide.subtitle[locale as 'ka' | 'en'] }}
               </p>
               
-                <!-- CTA Button - from API -->
+                <!-- CTA Button -->
                 <a
-                  v-if="getSlideLink(slide) && getSlideButtonText(slide)"
+                  v-if="getSlideLink(slide)"
                   :href="getSlideLink(slide)"
                   class="inline-flex items-center px-3 py-1.5 sm:px-5 sm:py-2.5 bg-secondary-500 text-white rounded-full font-semibold hover:bg-secondary-600 transition-all duration-300 font-headline text-[11px] sm:text-xs shadow-lg"
                 >
-                  <span>{{ getSlideButtonText(slide) }}</span>
+                  <span>{{ locale === 'ka' ? 'გაიგე მეტი' : 'Read More' }}</span>
                   <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                   </svg>
