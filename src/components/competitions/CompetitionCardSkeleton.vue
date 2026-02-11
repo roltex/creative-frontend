@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <!-- Image Skeleton -->
-    <div class="aspect-16-9 skeleton"></div>
+    <div class="aspect-square skeleton"></div>
     
     <!-- Content Skeleton -->
     <div class="p-6 space-y-3">

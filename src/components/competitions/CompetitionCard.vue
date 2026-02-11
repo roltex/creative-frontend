@@ -1,7 +1,7 @@
 <template>
   <article class="card-hover group">
     <!-- Image -->
-    <div class="aspect-16-9 bg-gray-100 relative overflow-hidden">
+    <div class="aspect-square bg-gray-100 relative overflow-hidden">
       <img
         v-if="competition.image"
         :src="getImageUrl(competition.image)"
