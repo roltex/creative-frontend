@@ -33,7 +33,7 @@
       </div>
 
       <!-- Title -->
-      <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-500 transition-colors">
+      <h3 class="text-sm font-bold text-gray-900 mb-2 group-hover:text-primary-500 transition-colors leading-snug">
         {{ competition.title[$i18n.locale as 'ka' | 'en'] }}
       </h3>
 
