@@ -195,7 +195,7 @@ const initialized = computed(() => pressStore.initialized)
 const searchQuery = ref('')
 const selectedMedia = ref('')
 const currentPage = ref(1)
-const itemsPerPage = 10
+const itemsPerPage = 12
 
 // Get unique media names
 const mediaNames = computed(() => {
