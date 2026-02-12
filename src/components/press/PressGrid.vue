@@ -80,7 +80,7 @@
 
           <!-- Media Name -->
           <div class="col-span-3">
-            <p class="text-sm font-medium text-gray-700">{{ article.mediaName || article.category }}</p>
+            <p class="text-sm font-medium text-gray-700">{{ getMediaName(article) }}</p>
           </div>
 
           <!-- Link -->
@@ -110,7 +110,7 @@
               <img
                 v-if="article.mediaLogo"
                 :src="getImageUrl(article.mediaLogo)"
-                :alt="article.mediaName || 'Media logo'"
+                :alt="getMediaName(article) || 'Media logo'"
                 class="w-full h-full object-contain p-2"
               />
               <Newspaper v-else class="w-8 h-8 text-gray-400" />
@@ -197,12 +197,22 @@ const selectedMedia = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 12
 
-// Get unique media names
+// Helper to get translated media name from article
+const getMediaName = (article: any): string => {
+  if (!article.mediaName) return article.category || ''
+  if (typeof article.mediaName === 'object') {
+    return article.mediaName[locale.value as 'ka' | 'en'] || article.mediaName['ka'] || article.mediaName['en'] || ''
+  }
+  return article.mediaName
+}
+
+// Get unique media names (in current locale)
 const mediaNames = computed(() => {
   const names = new Set<string>()
   const articlesList = Array.isArray(articles.value) ? articles.value : []
   articlesList.forEach(a => {
-    if (a.mediaName) names.add(a.mediaName)
+    const name = getMediaName(a)
+    if (name) names.add(name)
   })
   return Array.from(names).sort()
 })
@@ -217,7 +227,7 @@ const filteredArticles = computed(() => {
     filtered = filtered.filter(a => {
       const titleKa = a.title?.ka || ''
       const titleEn = a.title?.en || ''
-      const mediaName = a.mediaName || ''
+      const mediaName = getMediaName(a)
       return titleKa.toLowerCase().includes(query) ||
         titleEn.toLowerCase().includes(query) ||
         mediaName.toLowerCase().includes(query)
@@ -226,7 +236,7 @@ const filteredArticles = computed(() => {
   
   // Apply media filter
   if (selectedMedia.value) {
-    filtered = filtered.filter(a => a.mediaName === selectedMedia.value)
+    filtered = filtered.filter(a => getMediaName(a) === selectedMedia.value)
   }
   
   // Apply prop filters

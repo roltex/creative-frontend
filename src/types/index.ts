@@ -144,7 +144,7 @@ export interface NewsArticle {
 
 // Press Types
 export interface PressArticle extends NewsArticle {
-  mediaName?: string
+  mediaName?: string | { ka: string; en: string }
   mediaLogo?: string
   externalUrl?: string
 }
