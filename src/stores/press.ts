@@ -21,24 +21,16 @@ export const usePressStore = defineStore('press', () => {
     total: 0
   })
 
-  async function fetchArticles(page = 1) {
+  async function fetchArticles() {
     if (loading.value) return articles.value
     
     loading.value = true
     error.value = null
 
     try {
+      // Fetch all press articles at once for client-side filtering/pagination
       const params: any = {
-        page,
-        per_page: pagination.value.perPage
-      }
-
-      // Add filters to params
-      if (filters.value.media !== 'all') {
-        params.media = filters.value.media
-      }
-      if (filters.value.search) {
-        params.search = filters.value.search
+        per_page: 1000
       }
 
       const response = await api.get('/press', { params })
@@ -49,9 +41,9 @@ export const usePressStore = defineStore('press', () => {
         // Update pagination from response meta
         if (response.data.meta) {
           pagination.value = {
-            currentPage: response.data.meta.current_page || 1,
+            currentPage: 1,
             totalPages: response.data.meta.last_page || 1,
-            perPage: response.data.meta.per_page || 12,
+            perPage: response.data.meta.per_page || 1000,
             total: response.data.meta.total || 0
           }
         }
@@ -88,8 +80,6 @@ export const usePressStore = defineStore('press', () => {
   function setFilters(newFilters: Partial<typeof filters.value>) {
     filters.value = { ...filters.value, ...newFilters }
     pagination.value.currentPage = 1
-    // Fetch articles with new filters
-    fetchArticles(1)
   }
 
   function clearFilters() {
@@ -98,20 +88,6 @@ export const usePressStore = defineStore('press', () => {
       search: ''
     }
     pagination.value.currentPage = 1
-    // Fetch articles without filters
-    fetchArticles(1)
-  }
-
-  async function loadMore() {
-    if (pagination.value.currentPage < pagination.value.totalPages && !loading.value) {
-      const nextPage = pagination.value.currentPage + 1
-      const moreArticles = await fetchArticles(nextPage)
-      
-      if (moreArticles && moreArticles.length > 0) {
-        // Append new articles to existing ones
-        articles.value = [...articles.value, ...moreArticles]
-      }
-    }
   }
 
   return {
@@ -126,7 +102,6 @@ export const usePressStore = defineStore('press', () => {
     fetchArticles,
     fetchMediaOutlets,
     setFilters,
-    clearFilters,
-    loadMore
+    clearFilters
   }
 })
