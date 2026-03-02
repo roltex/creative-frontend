@@ -55,12 +55,25 @@ export const useMenusStore = defineStore('menus', () => {
     return menus.value
   }
 
+  function filterActiveItems(items: MenuItem[]): MenuItem[] {
+    return items
+      .filter(item => item.is_active !== false)
+      .map(item => ({
+        ...item,
+        children: item.children ? filterActiveItems(item.children) : []
+      }))
+  }
+
   async function fetchHeaderMenu() {
     try {
       const response = await api.get('/menus/header')
       
       if (response.data.success) {
-        headerMenu.value = response.data.data
+        const menu = response.data.data
+        if (menu && menu.items) {
+          menu.items = filterActiveItems(menu.items)
+        }
+        headerMenu.value = menu
         return headerMenu.value
       } else {
         headerMenu.value = null
@@ -78,7 +91,11 @@ export const useMenusStore = defineStore('menus', () => {
       const response = await api.get('/menus/footer')
       
       if (response.data.success) {
-        footerMenu.value = response.data.data
+        const menu = response.data.data
+        if (menu && menu.items) {
+          menu.items = filterActiveItems(menu.items)
+        }
+        footerMenu.value = menu
         return footerMenu.value
       } else {
         footerMenu.value = null
