@@ -129,9 +129,19 @@
                   <Calendar class="w-4 h-4 mr-2" />
                   {{ $t('events.dateTime') }}
                 </p>
-                <div class="ml-6">
-                  <p v-if="formatDate(event.startAt)" class="text-base font-semibold text-gray-900 mb-1">{{ formatDate(event.startAt) }}</p>
-                  <p v-if="formatTime(event.startAt)" class="text-sm text-gray-600">{{ formatTime(event.startAt) }}</p>
+                <div class="ml-6 space-y-2">
+                  <!-- Start -->
+                  <div v-if="event.startAt">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">{{ $i18n.locale === 'ka' ? 'დაწყება' : 'Start' }}</p>
+                    <p class="text-base font-semibold text-gray-900">{{ formatDate(event.startAt) }}</p>
+                    <p v-if="formatTime(event.startAt)" class="text-sm text-gray-600">{{ formatTime(event.startAt) }}</p>
+                  </div>
+                  <!-- End -->
+                  <div v-if="event.endAt">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">{{ $i18n.locale === 'ka' ? 'დასრულება' : 'End' }}</p>
+                    <p class="text-base font-semibold text-gray-900">{{ formatDate(event.endAt) }}</p>
+                    <p v-if="formatTime(event.endAt)" class="text-sm text-gray-600">{{ formatTime(event.endAt) }}</p>
+                  </div>
                 </div>
               </div>
               
