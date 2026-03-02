@@ -17,12 +17,11 @@ const getApiBaseURL = (): string => {
   
   // Auto-detect based on current origin
   const origin = window.location.origin
-  const isProduction = origin.includes('creative.buildweb.dev') || 
-                       origin.includes('creative-georgia.ge') ||
-                       origin.includes('creativegeorgia.ge')
   
-  if (isProduction) {
-    // Production API URL
+  if (origin.includes('creativegeorgia.ge')) {
+    return 'https://api.creativegeorgia.ge/api'
+  }
+  if (origin.includes('creative.buildweb.dev') || origin.includes('creative-georgia.ge')) {
     return 'https://creative-api.buildweb.dev/api'
   }
   
@@ -78,9 +77,10 @@ api.interceptors.request.use(
     } else {
       // Fallback to auto-detection
       const origin = window.location.origin
-      if (origin.includes('creative.buildweb.dev') || 
-          origin.includes('creative-georgia.ge') ||
-          origin.includes('creativegeorgia.ge')) {
+      if (origin.includes('creativegeorgia.ge')) {
+        config.baseURL = 'https://api.creativegeorgia.ge/api'
+      } else if (origin.includes('creative.buildweb.dev') || 
+          origin.includes('creative-georgia.ge')) {
         config.baseURL = 'https://creative-api.buildweb.dev/api'
       }
     }
