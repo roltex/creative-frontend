@@ -22,10 +22,10 @@
     <!-- Dynamic Hero Section -->
     <div class="text-center mb-16">
       <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 font-headline">
-        {{ $i18n.locale === 'ka' ? pageData.title.ka : pageData.title.en }}
+        {{ pageData.title ? ($i18n.locale === 'ka' ? (pageData.title.ka || pageData.title.en) : (pageData.title.en || pageData.title.ka)) : '' }}
       </h1>
       <p v-if="pageData.subtitle" class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-        {{ $i18n.locale === 'ka' ? pageData.subtitle.ka : pageData.subtitle.en }}
+        {{ $i18n.locale === 'ka' ? (pageData.subtitle.ka || pageData.subtitle.en) : (pageData.subtitle.en || pageData.subtitle.ka) }}
       </p>
     </div>
 
@@ -41,8 +41,8 @@
           <div :class="['w-12 h-12 rounded-full flex items-center justify-center mb-4', index % 2 === 0 ? 'bg-primary-500' : 'bg-secondary-500']">
             <div class="w-6 h-6 bg-white rounded-full"></div>
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-3 font-headline">
-            {{ $i18n.locale === 'ka' ? act.title.ka : act.title.en }}
+          <h3 v-if="act.title" class="text-2xl font-bold text-gray-900 mb-3 font-headline">
+            {{ $i18n.locale === 'ka' ? (act.title.ka || act.title.en || '') : (act.title.en || act.title.ka || '') }}
           </h3>
           <p v-if="act.date" class="text-gray-700 mb-4 leading-relaxed">
             {{ formatLocalDate(act.date, locale) }}
@@ -69,8 +69,8 @@
           <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
             <div class="w-6 h-6 border-2 border-primary-500 rounded-full"></div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-2 font-headline">
-            {{ $i18n.locale === 'ka' ? regulation.title.ka : regulation.title.en }}
+          <h3 v-if="regulation.title" class="text-xl font-bold text-gray-900 mb-2 font-headline">
+            {{ $i18n.locale === 'ka' ? (regulation.title.ka || regulation.title.en || '') : (regulation.title.en || regulation.title.ka || '') }}
           </h3>
           <p v-if="regulation.date" class="text-gray-600 mb-4 text-sm">
             {{ formatLocalDate(regulation.date, locale) }}
