@@ -19,7 +19,7 @@ const getApiBaseURL = (): string => {
   const origin = window.location.origin
   const isProduction = origin.includes('creative.buildweb.dev') || 
                        origin.includes('creative-georgia.ge') ||
-                       origin.includes('www.creative-georgia.ge')
+                       origin.includes('creativegeorgia.ge')
   
   if (isProduction) {
     // Production API URL
@@ -79,7 +79,8 @@ api.interceptors.request.use(
       // Fallback to auto-detection
       const origin = window.location.origin
       if (origin.includes('creative.buildweb.dev') || 
-          origin.includes('creative-georgia.ge')) {
+          origin.includes('creative-georgia.ge') ||
+          origin.includes('creativegeorgia.ge')) {
         config.baseURL = 'https://creative-api.buildweb.dev/api'
       }
     }

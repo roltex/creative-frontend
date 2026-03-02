@@ -15,7 +15,7 @@ function getBackendBaseUrl(): string {
   // Auto-detect based on current domain
   if (typeof window !== 'undefined') {
     const origin = window.location.origin
-    if (origin.includes('creative.buildweb.dev') || origin.includes('creative-georgia.ge')) {
+    if (origin.includes('creative.buildweb.dev') || origin.includes('creative-georgia.ge') || origin.includes('creativegeorgia.ge')) {
       return 'https://creative-api.buildweb.dev'
     }
   }
@@ -38,7 +38,7 @@ export function getImageUrl(imagePath: string | null | undefined): string {
     // Replace localhost URLs with production URL in production environment
     if (typeof window !== 'undefined') {
       const origin = window.location.origin
-      if (origin.includes('creative.buildweb.dev') || origin.includes('creative-georgia.ge')) {
+      if (origin.includes('creative.buildweb.dev') || origin.includes('creative-georgia.ge') || origin.includes('creativegeorgia.ge')) {
         if (imagePath.includes('localhost:8000')) {
           return imagePath.replace('http://localhost:8000', 'https://creative-api.buildweb.dev')
         }
