@@ -37,19 +37,19 @@
       
       <div v-if="pageData.legal_acts_list && pageData.legal_acts_list.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-for="(act, index) in pageData.legal_acts_list" :key="index" 
-             :class="['rounded-2xl p-8 border', index % 2 === 0 ? 'bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200' : 'bg-gradient-to-br from-secondary-50 to-secondary-100 border-secondary-200']">
-          <div :class="['w-12 h-12 rounded-full flex items-center justify-center mb-4', index % 2 === 0 ? 'bg-primary-500' : 'bg-secondary-500']">
+             :class="['rounded-2xl p-8 border', (act.style === 'secondary' || (!act.style && index % 2 !== 0)) ? 'bg-gradient-to-br from-secondary-50 to-secondary-100 border-secondary-200' : 'bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200']">
+          <div :class="['w-12 h-12 rounded-full flex items-center justify-center mb-4', (act.style === 'secondary' || (!act.style && index % 2 !== 0)) ? 'bg-secondary-500' : 'bg-primary-500']">
             <div class="w-6 h-6 bg-white rounded-full"></div>
           </div>
-          <h3 v-if="act.title" class="text-2xl font-bold text-gray-900 mb-3 font-headline">
-            {{ $i18n.locale === 'ka' ? (act.title.ka || act.title.en || '') : (act.title.en || act.title.ka || '') }}
+          <h3 class="text-2xl font-bold text-gray-900 mb-3 font-headline">
+            {{ getTranslation(act, 'title') }}
           </h3>
-          <p v-if="act.date" class="text-gray-700 mb-4 leading-relaxed">
-            {{ formatLocalDate(act.date, locale) }}
+          <p v-if="getTranslation(act, 'description')" class="text-gray-700 mb-4 leading-relaxed">
+            {{ getTranslation(act, 'description') }}
           </p>
           <a v-if="act.file" :href="act.file" target="_blank" 
-             :class="['font-semibold flex items-center hover:underline', index % 2 === 0 ? 'text-primary-700 hover:text-primary-800' : 'text-secondary-700 hover:text-secondary-800']">
-            ჩამოტვირთვა
+             :class="['font-semibold flex items-center hover:underline', (act.style === 'secondary' || (!act.style && index % 2 !== 0)) ? 'text-secondary-700 hover:text-secondary-800' : 'text-primary-700 hover:text-primary-800']">
+            {{ $i18n.locale === 'ka' ? 'ჩამოტვირთვა' : 'Download' }}
             <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
@@ -69,14 +69,14 @@
           <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
             <div class="w-6 h-6 border-2 border-primary-500 rounded-full"></div>
           </div>
-          <h3 v-if="regulation.title" class="text-xl font-bold text-gray-900 mb-2 font-headline">
-            {{ $i18n.locale === 'ka' ? (regulation.title.ka || regulation.title.en || '') : (regulation.title.en || regulation.title.ka || '') }}
+          <h3 class="text-xl font-bold text-gray-900 mb-2 font-headline">
+            {{ getTranslation(regulation, 'title') }}
           </h3>
-          <p v-if="regulation.date" class="text-gray-600 mb-4 text-sm">
-            {{ formatLocalDate(regulation.date, locale) }}
+          <p v-if="getTranslation(regulation, 'description')" class="text-gray-600 mb-4 text-sm">
+            {{ getTranslation(regulation, 'description') }}
           </p>
           <a v-if="regulation.file" :href="regulation.file" target="_blank" class="text-primary-600 hover:text-primary-700 font-medium flex items-center">
-            ჩამოტვირთვა
+            {{ $i18n.locale === 'ka' ? 'ჩამოტვირთვა' : 'Download' }}
             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
@@ -112,7 +112,6 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { usePagesStore } from '../../stores/pages'
-import { formatLocalDate } from '../../utils/dateFormat'
 
 const { locale } = useI18n()
 const pagesStore = usePagesStore()
@@ -120,6 +119,16 @@ const pagesStore = usePagesStore()
 const pageData = ref<any>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+function getTranslation(item: any, field: string): string {
+  if (!item) return ''
+  const lang = locale.value
+  const other = lang === 'ka' ? 'en' : 'ka'
+  if (item[field] && typeof item[field] === 'object') {
+    return item[field][lang] || item[field][other] || ''
+  }
+  return item[`${field}_${lang}`] || item[`${field}_${other}`] || item[field] || ''
+}
 
 onMounted(async () => {
   try {
