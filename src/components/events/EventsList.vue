@@ -50,14 +50,6 @@
                 <Users class="w-4 h-4 mr-1" />
                 <span>{{ event.capacity }} seats</span>
               </div>
-              <div class="flex items-center">
-                <span :class="[
-                  'px-2 py-1 rounded-full text-xs font-semibold',
-                  event.price ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
-                ]">
-                  {{ event.price ? `₾${event.price}` : $t('events.free') }}
-                </span>
-              </div>
             </div>
 
             <!-- Action Button -->

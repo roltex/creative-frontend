@@ -12,18 +12,6 @@
         <Calendar class="w-16 h-16 text-primary-500" />
       </div>
       
-      <!-- Status Badge -->
-      <div class="absolute top-4 right-4">
-        <span
-          :class="[
-            'px-3 py-1 rounded-full text-xs font-semibold',
-            event.price ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
-          ]"
-        >
-          {{ event.price ? `₾${event.price}` : $t('events.free') }}
-        </span>
-      </div>
-
       <!-- Date Badge -->
       <div class="absolute bottom-4 left-4 bg-white rounded-lg px-3 py-2 shadow-lg">
         <div class="text-2xl font-bold text-gray-900">{{ getDay((event as any).start_date || event.startAt) }}</div>
@@ -33,11 +21,6 @@
 
     <!-- Event Content -->
     <div class="p-6">
-      <!-- Type Badge -->
-      <div class="inline-block px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-semibold uppercase tracking-wide mb-3">
-        {{ event.type }}
-      </div>
-
       <!-- Title -->
       <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-500 transition-colors">
         {{ event.title[$i18n.locale as 'ka' | 'en'] }}

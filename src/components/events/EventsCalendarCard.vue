@@ -20,12 +20,6 @@
         </div>
       </div>
 
-      <!-- Event Type Badge -->
-      <div class="absolute top-4 right-4">
-        <span class="px-3 py-1.5 bg-secondary-500 text-white text-xs font-semibold rounded-full shadow-md">
-          {{ getEventType(currentEvent.type) }}
-        </span>
-      </div>
 
       <!-- Rotating Indicator Dots (if multiple events) -->
       <div v-if="eventsForDate.length > 1" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
@@ -56,14 +50,6 @@
         <div v-if="currentEvent.capacity" class="flex items-center text-gray-600">
           <Users class="w-4 h-4 mr-1" />
           <span>{{ currentEvent.capacity }}</span>
-        </div>
-        <div class="ml-auto">
-          <span :class="[
-            'px-3 py-1 rounded-full text-xs font-semibold',
-            currentEvent.price ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
-          ]">
-            {{ currentEvent.price ? `₾${currentEvent.price}` : $t('events.free') }}
-          </span>
         </div>
       </div>
 
