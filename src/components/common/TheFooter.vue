@@ -20,25 +20,16 @@
           </RouterLink>
         </div>
 
-        <!-- Dynamic Quick Links -->
+        <!-- Quick Links -->
         <div>
           <h3 class="text-lg font-semibold mb-4">{{ $t('footer.quickLinks') }}</h3>
-          <ul class="space-y-2" v-if="footerMenu && footerMenu.items && footerMenu.items.length > 0">
-            <li v-for="item in footerMenu.items" :key="item.id">
-              <RouterLink
-                :to="item.url"
-                class="text-gray-400 hover:text-white transition-colors text-sm"
-              >
-                {{ $i18n.locale === 'ka' ? item.title.ka : item.title.en }}
-              </RouterLink>
-            </li>
-          </ul>
-          <!-- Fallback links if footer menu not loaded -->
-          <ul v-else class="space-y-2">
-            <li><RouterLink :to="{ name: 'about-mission' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.about') }}</RouterLink></li>
-            <li><RouterLink :to="{ name: 'competitions' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.competitions') }}</RouterLink></li>
+          <ul class="space-y-2">
+            <li><RouterLink :to="{ name: 'about-mission' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $i18n.locale === 'ka' ? 'მისია და მიზნები' : 'Mission & Goals' }}</RouterLink></li>
+            <li><RouterLink :to="{ name: 'competitions-current' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $i18n.locale === 'ka' ? 'მიმდინარე კონკურსები' : 'Current Competitions' }}</RouterLink></li>
             <li><RouterLink :to="{ name: 'news' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.news') }}</RouterLink></li>
+            <li><RouterLink :to="{ name: 'press' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.press') }}</RouterLink></li>
             <li><RouterLink :to="{ name: 'events' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.events') }}</RouterLink></li>
+            <li><RouterLink :to="{ name: 'resources-acts' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $i18n.locale === 'ka' ? 'სამართლებრივი აქტები' : 'Legal Acts' }}</RouterLink></li>
             <li><RouterLink :to="{ name: 'faqs' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.faqs') }}</RouterLink></li>
             <li><RouterLink :to="{ name: 'contact' }" class="text-gray-400 hover:text-white transition-colors text-sm">{{ $t('nav.contact') }}</RouterLink></li>
           </ul>
