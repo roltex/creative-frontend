@@ -89,7 +89,7 @@
             
             <!-- News small text under title -->
             <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed flex-1">
-              {{ article.excerpt?.[locale as 'ka' | 'en'] || article.content[locale as 'ka' | 'en'].substring(0, 80) + '...' }}
+              {{ stripHtml(article.excerpt?.[locale as 'ka' | 'en'] || article.content[locale as 'ka' | 'en']) }}
             </p>
             
             <!-- Read More Button -->
@@ -182,6 +182,11 @@ const displayedArticles = computed(() => {
   
   return filtered.slice(startIndex, endIndex)
 })
+
+function stripHtml(html: string): string {
+  if (!html) return ''
+  return html.replace(/<[^>]*>/g, '').trim()
+}
 
 const handleCardClick = (article: any) => {
   router.push({ name: 'news-article', params: { slug: article.slug } })
