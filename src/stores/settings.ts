@@ -45,6 +45,23 @@ interface SiteSettings {
     longitude: number
     zoom: number
   }
+  homepage?: {
+    sections: {
+      hero_banner: boolean
+      cta: boolean
+      competitions: { visible: boolean; title: { ka: string; en: string } }
+      news: { visible: boolean; title: { ka: string; en: string } }
+      events: { visible: boolean; title: { ka: string; en: string } }
+      success_stories: { visible: boolean; title: { ka: string; en: string } }
+    }
+    cta: {
+      title: { ka: string; en: string }
+      subtitle: { ka: string; en: string }
+      button_text: { ka: string; en: string }
+      button_url: string
+      stats: Array<{ value: string; suffix: string; label: { ka: string; en: string } }>
+    }
+  }
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -99,6 +116,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const getFeatures = () => settings.value?.features
   const getStatistics = () => settings.value?.statistics
   const getMapConfig = () => settings.value?.map
+  const getHomepageSettings = () => settings.value?.homepage
 
   // Initialize data on store creation
   if (!initialized.value) {
@@ -118,6 +136,7 @@ export const useSettingsStore = defineStore('settings', () => {
     getThemeColors,
     getFeatures,
     getStatistics,
-    getMapConfig
+    getMapConfig,
+    getHomepageSettings
   }
 })

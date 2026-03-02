@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between mb-12">
       <div class="text-center flex-1">
         <h2 class="text-3xl font-bold text-gray-900 mb-2">
-          ბოლო სიახლეები
+          {{ title || 'ბოლო სიახლეები' }}
         </h2>
         <p class="text-gray-600">
           გაიგე რა გვაქვს ახალი საინტერესო შეთავაზებების სანახავად
@@ -163,6 +163,7 @@ const slideRight = () => {
 interface Props {
   limit?: number
   category?: string
+  title?: string
 }
 
 const props = defineProps<Props>()

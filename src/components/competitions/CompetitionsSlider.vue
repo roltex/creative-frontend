@@ -4,7 +4,7 @@
     <div class="flex items-start justify-between mb-16">
       <div class="flex-1 text-center">
         <h2 class="text-3xl font-bold text-gray-900 mb-2">
-          მიმდინარე კონკურსები
+          {{ title || 'მიმდინარე კონკურსები' }}
         </h2>
         <p class="text-gray-600">
           გაიგე რა გვაქვს ახალი საინტერესო შეთავაზებების სანახავად
@@ -154,6 +154,7 @@ import { useCompetitionsStore } from '../../stores/competitions'
 interface Props {
   limit?: number
   status?: 'current' | 'completed' | 'upcoming'
+  title?: string
 }
 
 const props = defineProps<Props>()
