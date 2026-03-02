@@ -82,10 +82,10 @@
       </div>
     </section>
 
-    <!-- Success Stories -->
-    <section class="section bg-white overflow-hidden">
+    <!-- Success Stories (hidden for now) -->
+    <!-- <section class="section bg-white overflow-hidden">
         <SuccessStoriesSlider />
-    </section>
+    </section> -->
   </div>
 </template>
 
