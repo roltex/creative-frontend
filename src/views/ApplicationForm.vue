@@ -1,5 +1,26 @@
 <template>
-  <div class="container-fluid py-8 lg:py-8">
+  <!-- Coming Soon placeholder -->
+  <div v-if="comingSoon" class="min-h-[60vh] flex items-center justify-center px-4">
+    <div class="text-center max-w-lg">
+      <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-primary-100 flex items-center justify-center">
+        <Clock class="w-10 h-10 text-primary-500" />
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-3 font-headline">
+        {{ $i18n.locale === 'ka' ? 'მალე დაემატება' : 'Coming Soon' }}
+      </h1>
+      <p class="text-gray-500 text-lg mb-8">
+        {{ $i18n.locale === 'ka' ? 'განაცხადის ფორმა მალე ხელმისაწვდომი იქნება.' : 'The application form will be available soon.' }}
+      </p>
+      <RouterLink
+        :to="{ name: 'home' }"
+        class="inline-flex items-center px-6 py-3 bg-primary-500 text-white rounded-full font-semibold hover:bg-primary-600 transition-colors"
+      >
+        {{ $i18n.locale === 'ka' ? 'მთავარ გვერდზე დაბრუნება' : 'Back to Home' }}
+      </RouterLink>
+    </div>
+  </div>
+
+  <div v-else class="container-fluid py-8 lg:py-8">
     <!-- Back Button -->
     <div v-if="currentStep > 1" class="max-w-4xl mx-auto mb-6">
       <button
@@ -2602,12 +2623,14 @@
 import { ref, computed, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
-import { ArrowLeft, Check } from 'lucide-vue-next'
+import { ArrowLeft, Check, Clock } from 'lucide-vue-next'
 import api from '../api/axios'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+
+const comingSoon = ref(true)
 
 // Determine current step from route name
 const currentStep = computed(() => {
