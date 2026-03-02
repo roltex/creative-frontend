@@ -23,13 +23,13 @@
           </div>
 
           <!-- Center - Test Mode Banner -->
-          <div class="flex-1 flex justify-center">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 rounded-full">
-              <span class="relative flex h-2 w-2">
+          <div class="flex-1 flex justify-center min-w-0 overflow-hidden">
+            <div class="inline-flex items-center gap-1.5 px-2 sm:px-3 py-1 bg-amber-50 border border-amber-200 rounded-full max-w-full">
+              <span class="relative flex h-2 w-2 shrink-0">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               </span>
-              <span class="text-amber-700 text-xs font-medium whitespace-nowrap">
+              <span class="text-amber-700 text-[10px] sm:text-xs font-medium truncate">
                 {{ $i18n.locale === 'ka' ? 'საიტი ფუნქციონირებს სატესტო რეჟიმში' : 'Website is in test mode' }}
               </span>
             </div>
