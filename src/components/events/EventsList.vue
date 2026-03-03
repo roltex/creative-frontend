@@ -34,7 +34,7 @@
               {{ event.title[$i18n.locale as 'ka' | 'en'] }}
             </h3>
             <p class="text-gray-600 mb-3 line-clamp-2">
-              {{ event.description[$i18n.locale as 'ka' | 'en'] }}
+              {{ stripHtml(event.description[$i18n.locale as 'ka' | 'en']) }}
             </p>
             
             <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
@@ -87,6 +87,7 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { Clock, MapPin, Users, Calendar } from 'lucide-vue-next'
 import { useEventsStore } from '../../stores/events'
+import { stripHtml } from '../../utils/imageUrl'
 import { getDay as getDayUtil, getMonth as getMonthUtil, getTime as getTimeUtil } from '../../utils/dateFormat'
 
 interface Props {

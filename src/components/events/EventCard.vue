@@ -14,8 +14,8 @@
       
       <!-- Date Badge -->
       <div class="absolute bottom-4 left-4 bg-white rounded-lg px-3 py-2 shadow-lg">
-        <div class="text-2xl font-bold text-gray-900">{{ getDay((event as any).start_date || event.startAt) }}</div>
-        <div class="text-xs text-gray-600 uppercase">{{ getMonth((event as any).start_date || event.startAt) }}</div>
+        <div class="text-2xl font-bold text-gray-900">{{ getDay(event.startAt) }}</div>
+        <div class="text-xs text-gray-600 uppercase">{{ getMonth(event.startAt) }}</div>
       </div>
     </div>
 
@@ -28,14 +28,14 @@
 
       <!-- Description -->
       <p class="text-gray-600 mb-4 line-clamp-2 text-sm">
-        {{ event.description[$i18n.locale as 'ka' | 'en'] }}
+        {{ stripHtml(event.description[$i18n.locale as 'ka' | 'en']) }}
       </p>
 
       <!-- Event Meta -->
       <div class="space-y-2 mb-4">
         <div class="flex items-center text-sm text-gray-500">
           <Clock class="w-4 h-4 mr-2 flex-shrink-0" />
-          <span>{{ getTime((event as any).start_date || event.startAt) }}</span>
+          <span>{{ getTime(event.startAt) }}</span>
         </div>
         <div class="flex items-center text-sm text-gray-500">
           <MapPin class="w-4 h-4 mr-2 flex-shrink-0" />
@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { Calendar, Clock, MapPin, Users } from 'lucide-vue-next'
-import { getImageUrl } from '../../utils/imageUrl'
+import { getImageUrl, stripHtml } from '../../utils/imageUrl'
 import { getDay as getDayUtil, getMonth as getMonthUtil, getTime as getTimeUtil } from '../../utils/dateFormat'
 import type { Event } from '../../types'
 

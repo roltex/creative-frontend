@@ -14,9 +14,9 @@
       <!-- Date and Time Badge -->
       <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-lg">
         <div class="text-center">
-          <div class="text-2xl font-bold text-gray-900 font-headline">{{ getDay((currentEvent as any).start_date || currentEvent.startAt) }}</div>
-          <div class="text-xs uppercase text-gray-600 font-medium tracking-wide">{{ getMonth((currentEvent as any).start_date || currentEvent.startAt) }}</div>
-          <div class="text-xs text-gray-500 mt-1">{{ getTime((currentEvent as any).start_date || currentEvent.startAt) }}</div>
+          <div class="text-2xl font-bold text-gray-900 font-headline">{{ getDay(currentEvent.startAt) }}</div>
+          <div class="text-xs uppercase text-gray-600 font-medium tracking-wide">{{ getMonth(currentEvent.startAt) }}</div>
+          <div class="text-xs text-gray-500 mt-1">{{ getTime(currentEvent.startAt) }}</div>
         </div>
       </div>
 
